@@ -1,0 +1,507 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #000 !important; /* Fondo negro */
+  color: #fff; /* Texto en blanco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Navbar styles */
+.navbar {
+  padding: 0.5rem 1rem; /* Reduce padding */
+  background-color: transparent !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar-nav .nav-link {
+  color: #fff;
+  margin-right: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #00cc99; /* Efecto hover verdoso */
+}
+
+.navbar-toggler {
+  display: none;
+  font-size: 1.5rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Sobrescribir el color del ícono de la hamburguesa a blanco */
+.navbar-light .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Content Balance */
+.content_balance {
+  color: white;
+  font-weight: bold;
+  background-color: #28a745; /* Fondo del botón conectado */
+  padding: 5px 15px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 10px 0;
+}
+
+/* Chat container */
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #111; /* Fondo oscuro para el contenedor del chat */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #222;
+  border-bottom: 1px solid #333;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Chat Header Image */
+.chat-header img {
+  width: 50px;
+  margin-right: 15px;
+}
+
+/* Feature section */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 20px 0;
+  padding: 20px;
+  width: 100%;
+}
+
+.feature {
+  background-color: rgba(255, 255, 255, 0.1); /* Caja semitransparente */
+  padding: 20px;
+  width: 30%;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.feature:hover {
+  transform: scale(1.05);
+}
+
+.feature h3 {
+  background-image: linear-gradient(to right, #0066ff, #33ccff); /* Texto con gradiente */
+  color: transparent;
+  -webkit-background-clip: text;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  color: #ccc; /* Texto gris claro */
+  font-size: 1rem;
+}
+
+/* Chat Message Box */
+.chat-messages {
+  flex: 1 1 auto;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #222; /* Fondo oscuro para mensajes */
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+/* Chat Form */
+.chat-form {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  background-color: #111; /* Fondo oscuro para input del chat */
+  border-top: 1px solid #333; /* Borde sutil */
+  border-radius: 0 0 10px 10px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 15px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 25px;
+  border: none;
+  margin-right: 10px;
+  font-size: 1rem;
+}
+
+.chat-input::placeholder {
+  color: #ccc;
+}
+
+/* Botones del Chat */
+.chat-submit, .recordButton, #uploadButton {
+  background: gray;
+  padding: 10px;
+  border-radius: 50%; /* Botones redondeados */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, background 0.3s ease;
+  margin-right: 5px;
+}
+
+.chat-submit:hover, .recordButton:hover, #uploadButton:hover {
+  transform: scale(1.1); /* Efecto al pasar el cursor */
+  background: linear-gradient(to right, #00cc99, #0056b3);
+}
+
+.chat-submit img, .recordButton img, #uploadButton img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Botón de iniciar */
+button#initBtn {
+  background: gray;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+button#initBtn:hover {
+  background: linear-gradient(to right, rgb(22, 214, 32), green);
+  transform: scale(1.05);
+}
+
+/* File Upload */
+button#uploadButton img {
+  width: 30px;
+  cursor: pointer;
+}
+
+/* General Chat Styles */
+.chat-messages {
+  padding: 10px;
+  background-color: #111;
+  height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* User Message Styles */
+.user-message-container {
+  display: flex;
+  justify-content: flex-end; /* Alinea a la derecha */
+  margin-right: 10px;
+  padding-left: 30%; /* Evita que los mensajes se estiren demasiado */
+}
+
+.user-message-container .message-content {
+  background-color: #4CAF50; /* Fondo verde */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px 15px 0 15px; /* Bordes redondeados */
+  max-width: 60%;
+  word-wrap: break-word;
+  font-size: 14px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Server Message Styles */
+.server-message-container {
+  display: flex;
+  justify-content: flex-start; /* Alinea a la izquierda */
+  margin-left: 10px;
+  padding-right: 30%; /* Evita que los mensajes se estiren demasiado */
+}
+
+.server-message-container .message-content {
+  background: linear-gradient(45deg, #00CC66, #0056b3); /* Fondo con gradiente */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px 15px 15px 0; /* Bordes redondeados */
+  max-width: 60%;
+  word-wrap: break-word;
+  font-size: 14px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Message Images (para usuarios y servidor) */
+.message-images {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.message-images img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Title */
+.hearder_title {
+  background-image: url("{{ url_for('static', filename='images/features_back.jpeg', cache_timeout=0) }}");
+  background-size: cover; /* Asegura que la imagen cubra todo el div */
+  background-position: center; /* Centra la imagen dentro del div */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  width: 100%; /* Ajusta el ancho del div */
+  height: 100px; /* Ajusta la altura según el diseño */
+  display: flex;
+  align-items: center; /* Centra el contenido verticalmente */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  color: white; /* Cambia el color del texto si es necesario */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); /* Añade sombra al texto para mejorar legibilidad */
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 0 10px;
+}
+
+/* Additional Styles */
+.feature {
+  margin-bottom: 20px; /* Separación entre features */
+}
+
+.feature h3 {
+  margin: 0; /* Elimina el margen para que el texto esté mejor alineado */
+  color: white;
+}
+
+p {
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+a {
+  margin-left: 50px;
+  color: #00cc99;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #33ffcc;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Tablets and smaller devices */
+@media (max-width: 1024px) {
+  .feature {
+      width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Navbar adjustments */
+  .navbar-nav {
+      flex-direction: column;
+      width: 100%;
+      display: none;
+  }
+
+  .navbar-nav.active {
+      display: flex;
+  }
+
+  .navbar-nav .nav-link {
+      margin: 10px 0;
+  }
+
+  .navbar-toggler {
+      display: block;
+  }
+
+  /* Feature adjustments */
+  .feature {
+      width: 100%;
+  }
+
+  /* Chat adjustments */
+  .user-message-container {
+      padding-left: 10%;
+  }
+
+  .server-message-container {
+      padding-right: 10%;
+  }
+
+  .message-images img {
+      width: 50px;
+      height: 50px;
+  }
+}
+
+@media (max-width: 600px) and (orientation: landscape) {
+  .image-section .overlay-text {
+      font-size: 40px;
+  }
+
+  .hearder_title {
+      height: 80px;
+      font-size: 1.2rem;
+  }
+
+  .chat-header img {
+      width: 40px;
+      margin-right: 10px;
+  }
+
+  .chat-input {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+  }
+
+  button#initBtn {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+  }
+
+  .chat-submit img, .recordButton img, #uploadButton img {
+      width: 18px;
+      height: 18px;
+  }
+
+  .content_balance {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* General adjustments */
+  body {
+      height: auto;
+      padding: 20px 0;
+  }
+
+  .container, .chat {
+      box-shadow: none;
+      border-radius: 0;
+      padding: 10px;
+  }
+
+  .image-section .overlay-text {
+      font-size: 30px; /* Further reduce font size for smaller screens */
+  }
+
+  .hearder_title {
+      height: 60px;
+      font-size: 1rem;
+  }
+
+  h1 {
+      font-size: 18px;
+  }
+
+  p {
+      font-size: 15px;
+  }
+
+  .input-group label, .input-group input, button, .google-signin, .additional-links a {
+      font-size: 14px;
+  }
+
+  .navbar-nav .nav-link {
+      margin-right: 10px;
+  }
+
+  .feature h3 {
+      font-size: 1.2rem;
+  }
+
+  .feature p {
+      font-size: 0.9rem;
+  }
+
+  .chat-header img {
+      width: 40px;
+      margin-right: 10px;
+  }
+
+  .chat-input {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+  }
+
+  button#initBtn {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+  }
+
+  .chat-submit img, .recordButton img, #uploadButton img {
+      width: 18px;
+      height: 18px;
+  }
+
+  .content_balance {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+  }
+
+  /* Feature section */
+  .features {
+      padding: 10px;
+  }
+}
+
+/* High-resolution devices */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .image-section .overlay-text {
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+  }
+}

@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Airdrop MINI - GAME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added for responsiveness -->
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: white;
+            --gui-bg-color: rgba(0, 0, 0, 0.8);
+            --gui-border-radius: 25px;
+            --gui-box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            --number-color: rgba(0, 255, 0, 0.9);
+            --number-font-size: 1.8rem;
+            --spinner-size: 350px;
+            --spinner-border-width: 25px;
+            --popup-bg-color: rgba(0, 0, 0, 0.7);
+            --popup-content-bg: #1e1e1e;
+            --popup-border-radius: 15px;
+            --popup-padding: 20px;
+            --button-color: #00FFFF;
+            --button-hover-color: #00A1A1;
+            --close-button-color: #ff4d4d;
+            --connect-wallet-color: #FFA500;
+            --connect-wallet-hover-color: #FF8C00;
+            --wallet-connected-color: #28a745; /* Green color for connected state */
+            --wallet-connected-text-color: white;
+        }
+
+        /* Reset and Basic Styles */
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px; /* Add perspective for 3D rotations */
+        }
+
+        /* GUI Panel */
+        .gui-panel {
+            background-color: var(--gui-bg-color);
+            border-radius: var(--gui-border-radius);
+            box-shadow: var(--gui-box-shadow);
+            padding: 30px;
+            width: 95%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            height: auto; /* Ensure height adjusts to content */
+        }
+
+        /* Loading Bar */
+        #loadingBar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 15px;
+            background: linear-gradient(to right, green, #00FFFF); /* Gradient from green to cyan */
+            overflow: hidden;
+            border-radius: 7.5px;
+        }
+
+        #loadingLine {
+            width: 0;
+            height: 100%;
+            background-color: red;
+            transition: width 3.9s;
+        }
+
+        /* Moving Point */
+        #movingPoint {
+            width: 15px;
+            height: 15px;
+            background-color: green; /* Initially green */
+            border-radius: 50%;
+            position: absolute;
+            top: -2.5px; /* Center vertically within the loading bar */
+            left: 0;
+            box-shadow: 0px 0px 10px white;
+            transition: background-color 0.2s ease; /* Smooth transition for color change */
+        }
+
+        /* Spinners Container */
+        .spinners {
+            position: relative;
+            width: var(--spinner-size);
+            height: var(--spinner-size);
+            margin-top: 80px;
+        }
+
+        /* Spinner Styles */
+        .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border: var(--spinner-border-width) solid transparent;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner.red {
+            border-top-color: rgba(0, 255, 13, 0.856);
+            animation: spinRed 2s linear infinite;
+            z-index: 1;
+        }
+
+        .spinner.green {
+            border-bottom-color: rgb(12, 230, 238);
+            animation: spinGreen 2s linear infinite;
+            z-index: 1;
+        }
+
+        /* Spinner Animations */
+        @keyframes spinRed {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes spinGreen {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg); }
+        }
+
+        /* Main Image */
+        #mainImage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(0deg);
+            border-radius: 50%;
+            width: 85%;
+            height: 85%;
+            object-fit: cover;
+            z-index: 2;
+            box-shadow: 0 0 15px white;
+            transform-style: preserve-3d; /* Preserve 3D transformations */
+        }
+
+        /* Stop Score */
+        #top_score {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: white;
+        }
+
+        /* Number Animation */
+        .number-float {
+            position: absolute;
+            color: var(--number-color);
+            font-size: var(--number-font-size);
+            animation: floatUp 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px);
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            /* Adjustments for mobile devices */
+            body, html {
+                overflow: hidden; /* Prevent scrolling on the main page */
+                height: 100%;
+                width: 100%;
+            }
+
+            .gui-panel {
+                max-width: 100%;
+                width: 100%;
+                padding: 20px;
+                height: 90vh; /* Occupies 90% of the viewport height */
+                box-sizing: border-box; /* Include padding in total size */
+                overflow-y: auto; /* Allow vertical scrolling if content exceeds */
+            }
+
+            .spinners {
+                width: 250px;
+                height: 250px;
+                margin-top: 60px;
+            }
+
+            #mainImage {
+                width: 90%;
+                height: 90%;
+            }
+
+            #top_score {
+                font-size: 0.85rem;
+                padding: 4px 8px;
+            }
+
+            .number-float {
+                font-size: 1.2rem;
+            }
+
+            /* Adjust spinner border widths for smaller spinners */
+            .spinner.red, .spinner.green {
+                border-width: 15px; /* Reduced from 25px */
+            }
+        }
+
+        /* Popup Modal Styles */
+        #popupModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--popup-bg-color);
+            z-index: 1000; /* Ensure it's above other elements */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #popupContent {
+            background-color: var(--popup-content-bg);
+            padding: var(--popup-padding);
+            border-radius: var(--popup-border-radius);
+            width: 80%;
+            max-width: 400px;
+            position: relative;
+            color: var(--text-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #popupClose {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: var(--close-button-color);
+            cursor: pointer;
+        }
+
+        #popupMessage {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .follow-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: var(--button-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .follow-button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        /* Username Input Modal */
+        #usernameModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--popup-bg-color);
+            z-index: 1100; /* Above popupModal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #usernameContent {
+            background-color: var(--popup-content-bg);
+            padding: var(--popup-padding);
+            border-radius: var(--popup-border-radius);
+            width: 80%;
+            max-width: 400px;
+            position: relative;
+            color: var(--text-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #usernameClose {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: var(--close-button-color);
+            cursor: pointer;
+        }
+
+        #usernameMessage {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #usernameInput {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        #sendUsernameButton {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--button-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        #sendUsernameButton:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        /* Connect Wallet Button */
+        .connect-wallet-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0 0 0;
+            background-color: var(--connect-wallet-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .connect-wallet-button:hover {
+            background-color: var(--connect-wallet-hover-color);
+        }
+
+        /* Wallet Connected State */
+        .wallet-connected {
+            background-color: var(--wallet-connected-color) !important;
+            color: var(--wallet-connected-text-color) !important;
+            cursor: default !important;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="gui-panel">
+        <div id="loadingBar">
+            <div id="loadingLine"></div>
+            <div id="movingPoint"></div>
+        </div>
+        <div id="top_score" style="margin-top: 30px;">Energy Score: 0</div>
+
+        <div class="spinners"> 
+            <div class="spinner red" id="spinnerRed"></div> 
+            <div class="spinner green" id="spinnerGreen"></div> 
+            <img id="mainImage" src="{{ url_for('static', filename='images/mini-icon.png') }}" alt="Main Image"> 
+        </div> 
+        <div id="balance">Airdrop Points: + 0</div> <!-- Added to display balance -->
+
+        <!-- Connect Wallet Button -->
+        <button class="connect-wallet-button" id="connectWalletButton">Connect Wallet</button>
+    </div>
+
+    <!-- Popup Modal for Following Social Media -->
+    <div id="popupModal" style="display: none;">
+        <div id="popupContent">
+            <span id="popupClose">&times;</span>
+            <div id="popupMessage">You need to follow us on the following social media platforms to earn points:</div>
+            <div id="popupButtons">
+                <!-- Dynamically generated follow buttons -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Username Modal -->
+    <div id="usernameModal" style="display: none;">
+        <div id="usernameContent">
+            <span id="usernameClose">&times;</span>
+            <div id="usernameMessage">Please enter your username on this social media:</div>
+            <input type="text" id="usernameInput" placeholder="Enter your username">
+            <button id="sendUsernameButton">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Get user_hash from backend
+        const userHash = "{{ user_hash }}";
+        
+        window.onload = function() {
+            simulateLoading();
+            rotateElements();
+            movePoint();
+        
+            // Check if the wallet is already connected
+            checkWalletConnection();
+        }
+        
+        let isDragging = false;
+        let lastPosition = { x: 0, y: 0 };
+        let velocity = { x: 0, y: 0 };
+        let acceleration = 0;
+        let stopScore = 0;
+        let timeout = null;
+        let isRotating = false;
+        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);  // Detect if on mobile
+        let touchStartY = null; // Added to handle touch start
+        
+        const redSpinner = document.getElementById('spinnerRed');
+        const greenSpinner = document.getElementById('spinnerGreen');
+        const mainImage = document.getElementById('mainImage');
+        const topScoreElement = document.getElementById('top_score');
+        const movingPoint = document.getElementById('movingPoint');
+        const balanceElement = document.getElementById('balance'); // Added to display balance
+        
+        // Popup Modal Elements
+        const popupModal = document.getElementById('popupModal');
+        const popupClose = document.getElementById('popupClose');
+        const popupMessage = document.getElementById('popupMessage');
+        const popupButtons = document.getElementById('popupButtons');
+        
+        // Username Modal Elements
+        const usernameModal = document.getElementById('usernameModal');
+        const usernameClose = document.getElementById('usernameClose');
+        const usernameMessage = document.getElementById('usernameMessage');
+        const usernameInput = document.getElementById('usernameInput');
+        const sendUsernameButton = document.getElementById('sendUsernameButton');
+        
+        // Variables for automatic rotation of mainImage
+        let mainImageRotationY = 0;
+        let mainImageRotationSpeed = 0; // In degrees per second
+        const maxRotationSpeed = 180; // Maximum rotation speed (degrees per second)
+        
+        let lastFrameTime = null;
+        
+        // Create audio objects for sounds
+        const spinnerSound = new Audio("{{ url_for('static', filename='sound/spinner.mp3') }}");
+        spinnerSound.loop = true;
+        spinnerSound.volume = 0.5;
+        
+        const gainerSound = new Audio("{{ url_for('static', filename='sound/gainer.wav') }}");
+        gainerSound.volume = 0.5;
+        
+        let wasRotating = false; // Flag to control sound playback
+        
+        // Flag to check if user has interacted with the page
+        let userInteracted = false;
+        
+        // Function to set userInteracted to true on any user interaction
+        function enableAudioPlayback() {
+            if (!userInteracted) {
+                userInteracted = true;
+                // Optionally, you can play a silent audio or perform other actions
+            }
+        }
+        
+        // Add event listeners for user interactions to enable audio playback
+        document.addEventListener('click', enableAudioPlayback);
+        document.addEventListener('keydown', enableAudioPlayback);
+        document.addEventListener('touchstart', enableAudioPlayback);
+        
+        // Rotate elements function
+        function rotateElements() {
+            let redSpinnerRotation = 0;
+            let greenSpinnerRotation = 0;
+        
+            function updateRotation() {
+                if (acceleration > 0 || isRotating) {
+                    const totalVelocity = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+                    const rotationAmount = totalVelocity * 0.2 * acceleration;
+        
+                    // Update spinner rotations
+                    redSpinnerRotation += rotationAmount;
+                    greenSpinnerRotation -= rotationAmount;
+        
+                    redSpinner.style.transform = `translate(-50%, -50%) rotate(${redSpinnerRotation}deg)`;
+                    greenSpinner.style.transform = `translate(-50%, -50%) rotate(${greenSpinnerRotation}deg)`;
+        
+                    // Change overlay color based on cumulativeRotationY
+                    if ((mainImageRotationY % 360) < 180) {
+                        mainImage.style.backgroundColor = 'rgba(0, 255, 0, 0.3)'; // Green
+                    } else {
+                        mainImage.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Red
+                    }
+        
+                    // Show random numbers when rotating
+                    if (isRotating) {
+                        showRandomNumbers();
+                        isRotating = false;
+                    }
+                }
+        
+                requestAnimationFrame(updateRotation);
+            }
+        
+            updateRotation();
+        }
+        
+        function showRandomNumbers() {
+            const numberContainer = document.querySelector('.gui-panel');
+            const numberCount = Math.floor(Math.random() * 3) + 1; // 1 to 3 numbers
+            for (let i = 0; i < numberCount; i++) {
+                const number = document.createElement('div');
+                number.classList.add('number-float');
+                number.textContent = `+${Math.floor(Math.random() * 151) + 150}`; // 150 to 300
+                number.style.left = `${Math.random() * 80 + 10}%`; // Random horizontal position
+                number.style.top = `${Math.random() * 80 + 10}%`; // Random vertical position
+                numberContainer.appendChild(number);
+        
+                // Play gain sound when a number is generated if user has interacted
+                if (userInteracted) {
+                    gainerSound.play().catch((e) => {
+                        console.log('Error playing gainer.wav:', e);
+                    });
+                }
+        
+                // Remove the number after animation
+                number.addEventListener('animationend', () => {
+                    number.remove();
+                });
+            }
+        }
+        
+        function stopAcceleration() {
+            let start = null;
+            const duration = isMobile ? 1000 : 4000;
+        
+            function decelerate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                acceleration = Math.max(0, 1 - (progress / duration));
+                stopScore = parseFloat(acceleration.toFixed(2));
+                topScoreElement.innerHTML = `Energy Score: ${stopScore}`;
+        
+                // Update mainImage rotation speed based on stopScore with additional acceleration if near 1
+                if (stopScore >= 0.65) {
+                    mainImageRotationSpeed = stopScore * maxRotationSpeed * 1.5; // Increase speed by 50%
+                } else {
+                    mainImageRotationSpeed = stopScore * maxRotationSpeed;
+                }
+        
+                if (acceleration > 0) {
+                    requestAnimationFrame(decelerate);
+                } else {
+                    isRotating = false;
+                    mainImageRotationSpeed = 0; // Ensure rotation speed is zero
+                }
+            }
+        
+            requestAnimationFrame(decelerate);
+        }
+        
+        function scheduleStopAcceleration() {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            timeout = setTimeout(stopAcceleration, 2500);
+            isRotating = true;
+        }
+        
+        function updateAcceleration(distance) {
+            let modifiedDistance = distance;
+            if (isMobile) {
+                modifiedDistance *= 2;
+            }
+            acceleration = Math.min(1, modifiedDistance / 100);
+            stopScore = parseFloat(acceleration.toFixed(2));
+            topScoreElement.innerHTML = `Energy Score: ${stopScore}`;
+        
+            // Update mainImage rotation speed based on stopScore with additional acceleration if near 1
+            if (stopScore >= 0.65) {
+                mainImageRotationSpeed = stopScore * maxRotationSpeed * 1.5; // Increase speed by 50%
+            } else {
+                mainImageRotationSpeed = stopScore * maxRotationSpeed;
+            }
+        }
+        
+        function simulateLoading() {
+            const loadingDuration = 1000;
+            const startTime = Date.now();
+        
+            function updateLoadingLine() {
+                const loadingLine = document.getElementById('loadingLine');
+                const elapsedTime = Date.now() - startTime;
+                const percentage = Math.min(1, elapsedTime / loadingDuration);
+                loadingLine.style.width = `${percentage * 100}%`;
+        
+                if (percentage < 1) {
+                    requestAnimationFrame(updateLoadingLine);
+                } else {
+                    loadingLine.style.width = '0%';
+                    // Removed unnecessary code related to greenPoint
+                }
+            }
+        
+            updateLoadingLine();
+        }
+        
+        function movePoint() {
+            let pointPosition = 0;
+            let speed = 10;
+            const maxSpeed = 10;
+            const normalSpeed = 2;
+        
+            function move() {
+                movingPoint.style.left = `${pointPosition}px`;
+        
+                // Change point color based on its position
+                const loadingBar = document.getElementById('loadingBar');
+                const loadingBarWidth = loadingBar.clientWidth;
+                const movingPointWidth = movingPoint.clientWidth;
+                const denominator = loadingBarWidth - movingPointWidth;
+                const relativePos = denominator > 0 ? pointPosition / denominator : 0;
+                const clampedPos = Math.min(Math.max(relativePos, 0), 1); // Ensure it's between 0 and 1
+                const blue = Math.round(clampedPos * 255);
+                movingPoint.style.backgroundColor = `rgb(0, 255, ${blue})`;
+        
+                pointPosition += speed;
+                speed *= 1.05;
+        
+                if (pointPosition < loadingBarWidth - movingPointWidth) {
+                    requestAnimationFrame(move);
+        
+                    if (speed > maxSpeed) {
+                        speed = maxSpeed;
+                    }
+        
+                    if (stopScore > 0) {
+                        speed = Math.max(normalSpeed - (stopScore * normalSpeed), speed - stopScore * 1.05);
+                    }
+                } else {
+                    pointPosition = 0;
+                    speed = 10;
+                    move();
+                }
+            }
+        
+            move();
+        }
+        
+        function handlePointerStart(x, y) {
+            isDragging = true;
+            lastPosition.x = x;
+            lastPosition.y = y;
+            velocity = { x: 0, y: 0 };
+            isRotating = false;
+        }
+        
+        function handlePointerEnd() {
+            isDragging = false;
+            scheduleStopAcceleration();
+        }
+        
+        function handlePointerMove(x, y) {
+            if (isDragging) {
+                const deltaX = x - lastPosition.x;
+                const deltaY = y - lastPosition.y;
+                velocity = { x: deltaX, y: deltaY };
+                const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+                updateAcceleration(distance);
+                lastPosition.x = x;
+                lastPosition.y = y;
+            }
+        }
+        
+        function rotateImageOnScroll(deltaY) {
+            // Increase rotation speed based on deltaY and stopScore
+            mainImageRotationSpeed += deltaY * 0.05 * parseFloat(stopScore); // Adjust multiplier as needed
+        
+            // Limit speed to prevent overly fast rotations
+            mainImageRotationSpeed = Math.min(Math.max(mainImageRotationSpeed, -maxRotationSpeed * 1.5), maxRotationSpeed * 1.5); // Adjust to allow higher speeds
+        }
+        
+        // Mouse Events
+        document.addEventListener('mousedown', (e) => {
+            handlePointerStart(e.clientX, e.clientY);
+        });
+        
+        document.addEventListener('mouseup', () => {
+            handlePointerEnd();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            handlePointerMove(e.clientX, e.clientY);
+        });
+        
+        // Touch Events
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            handlePointerStart(touch.clientX, touch.clientY);
+            touchStartY = touch.clientY;
+        });
+        
+        document.addEventListener('touchend', () => {
+            handlePointerEnd();
+            touchStartY = null;
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            handlePointerMove(touch.clientX, touch.clientY);
+        
+            // Rotate main image on scroll
+            if (touchStartY !== null) {
+                const deltaY = touch.clientY - touchStartY;
+                rotateImageOnScroll(deltaY);
+            }
+            touchStartY = touch.clientY;
+        });
+        
+        // Mouse Wheel Event for Desktop
+        document.addEventListener('wheel', (e) => {
+            rotateImageOnScroll(e.deltaY);
+        });
+        
+        // Function to update automatic rotation of mainImage
+        function updateMainImageRotation(timestamp) {
+            if (!lastFrameTime) {
+                lastFrameTime = timestamp;
+                requestAnimationFrame(updateMainImageRotation);
+                return;
+            }
+        
+            const deltaTime = (timestamp - lastFrameTime) / 1000; // In seconds
+            lastFrameTime = timestamp;
+        
+            if (mainImageRotationSpeed !== 0) {
+                mainImageRotationY += mainImageRotationSpeed * deltaTime;
+                mainImage.style.transform = `translate(-50%, -50%) rotateY(${mainImageRotationY}deg)`;
+            }
+        
+            // Control sound playback based on rotation speed
+            if (Math.abs(mainImageRotationSpeed) > 0.1 && !wasRotating && userInteracted) { // Use a small threshold to avoid unwanted sounds
+                spinnerSound.play().catch((e) => {
+                    console.log('Error playing sound:', e);
+                });
+                wasRotating = true;
+            } else if (Math.abs(mainImageRotationSpeed) <= 0.1 && wasRotating) {
+                spinnerSound.pause();
+                spinnerSound.currentTime = 0; // Reset sound
+                wasRotating = false;
+            }
+        
+            requestAnimationFrame(updateMainImageRotation);
+        }
+        
+        // Start automatic rotation
+        requestAnimationFrame(updateMainImageRotation);
+        
+        // Start rotation and animations
+        rotateElements();
+        simulateLoading();
+        movePoint();
+        
+        // Function to check if the wallet is already connected
+        function checkWalletConnection() {
+            let provider;
+            if (window.solana && window.solana.isPhantom) {
+                provider = window.solana;
+            } else if (window.solflare && window.solflare.isSolflare) {
+                provider = window.solflare;
+            } else {
+                // No wallet installed
+                return;
+            }
+        
+            // Try to connect silently
+            provider.connect({ onlyIfTrusted: true })
+            .then(() => {
+                // Wallet connected
+                connectWalletButton.innerText = 'Wallet Connected';
+                connectWalletButton.style.backgroundColor = 'green';
+                connectWalletButton.disabled = true;
+                const publicKey = provider.publicKey.toString();
+                console.log('Wallet connected (silent):', publicKey);
+            })
+            .catch(err => {
+                console.log('Wallet not connected (silent):', err);
+            });
+        }
+        
+        // Connect Wallet Functionality
+        const connectWalletButton = document.getElementById('connectWalletButton');
+        
+        // Handle "Connect Wallet" click
+        connectWalletButton.addEventListener('click', async (event) => {
+            event.preventDefault();
+        
+            let provider;
+            let publicKey;
+        
+            // Check for a Solana wallet
+            if (window.solana && window.solana.isPhantom) {
+                provider = window.solana;
+            } else if (window.solflare && window.solflare.isSolflare) {
+                provider = window.solflare;
+            } else {
+                alert('Please install Phantom or Solflare wallet extension.');
+                return;
+            }
+        
+            try {
+                // Connect to the wallet
+                const resp = await provider.connect();
+        
+                // Get the public key
+                if (resp && resp.publicKey) {
+                    publicKey = resp.publicKey.toString();
+                } else if (provider.publicKey) {
+                    publicKey = provider.publicKey.toString();
+                } else {
+                    throw new Error('Unable to get the public key after connecting.');
+                }
+        
+                console.log('Connected to wallet:', publicKey);
+        
+                // Update the Connect Wallet button
+                connectWalletButton.innerText = 'Wallet Connected';
+                connectWalletButton.style.backgroundColor = 'green';
+                connectWalletButton.disabled = true; // Optionally disable the button
+        
+                // Proceed to the next step (if any)
+                // Example: Hide registration face 1 and show face 2
+                const registerFace1 = document.querySelector('.register-face-1');
+                const registerFace2 = document.querySelector('.register-face-2');
+                if (registerFace1 && registerFace2) {
+                    registerFace1.style.display = 'none';
+                    registerFace2.style.display = 'block';
+                }
+        
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to wallet: ' + err.message);
+            }
+        });
+        
+        // Function to show the popup with follow buttons
+        function showErrorPopup(errorMessage) {
+            // Parse the message to extract social media platforms
+            // Assuming the message format: "To continue and earn points, you need to follow us on: X.com, Telegram, TikTok."
+            const regex = /follow us on: ([\w\s.,]+)/i;
+            const match = errorMessage.match(regex);
+            let socialMediaList = [];
+            if (match && match[1]) {
+                socialMediaList = match[1]
+                    .split(',')
+                    .map(s => s.trim().replace(/[.]/g, '')); // Eliminar puntos finales
+            }
+        
+            console.log('Social Media List:', socialMediaList); // Debugging
+        
+            // Update the popup message
+            popupMessage.innerText = "Follow us on our social media to earn points:";
+        
+            // Clear previous buttons
+            popupButtons.innerHTML = '';
+        
+            // Mapping of social media to URLs
+            const socialMediaLinks = {
+                'X.com': 'https://x.com/MINI_MEME_AI', // Replace with your actual URL
+                'Telegram': 'https://t.me/minimemeai', // Replace with your actual URL
+                'TikTok': 'https://www.tiktok.com/@minimeme.io' // Replace with your actual URL
+                // Add more social media as needed
+            };
+        
+            // Create a button for each required social media
+            socialMediaList.forEach(social => {
+                const button = document.createElement('a');
+                button.classList.add('follow-button');
+                button.innerText = `Follow on ${social}`;
+                button.href = socialMediaLinks[social] || 'https://www.tiktok.com/@minimeme.io'; // Asignar '#' si no se encuentra la URL
+                button.target = '_blank';
+                button.dataset.social = social; // Store the social media name
+                popupButtons.appendChild(button);
+        
+                // Add click event to handle username input
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (button.href !== '#') { // Solo abrir si el href es válido
+                        window.open(button.href, '_blank');
+                    }
+                    // Show the username input modal
+                    showUsernameModal(social);
+                });
+            });
+        
+            // Show the popup
+            popupModal.style.display = 'flex';
+        }
+        
+        // Function to hide the popup
+        function hideErrorPopup() {
+            popupModal.style.display = 'none';
+        }
+        
+        // Event to close the popup when clicking on the 'X'
+        popupClose.addEventListener('click', hideErrorPopup);
+        
+        // Event to close the popup when clicking outside the content
+        window.addEventListener('click', (e) => {
+            if (e.target === popupModal) {
+                hideErrorPopup();
+            }
+        });
+        
+        // Function to show the username input modal
+        function showUsernameModal(social) {
+            usernameModal.style.display = 'flex';
+            usernameModal.dataset.social = social; // Store the social media name
+            usernameMessage.innerText = 'Please enter your username for ' + social + ':';
+        }
+        
+        // Function to hide the username input modal
+        function hideUsernameModal() {
+            usernameModal.style.display = 'none';
+            usernameInput.value = ''; // Clear input
+            delete usernameModal.dataset.social;
+        }
+        
+        // Event to close the username modal when clicking on the 'X'
+        usernameClose.addEventListener('click', hideUsernameModal);
+        
+        // Event to close the username modal when clicking outside the content
+        window.addEventListener('click', (e) => {
+            if (e.target === usernameModal) {
+                hideUsernameModal();
+            }
+        });
+        
+        // Event to handle sending the username
+        sendUsernameButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const social = usernameModal.dataset.social;
+        
+            if (username === '') {
+                alert('Please enter your username.');
+                return;
+            }
+        
+            // Prepare the data to send
+            const data = {
+                username: username,
+                social_media: social
+            };
+        
+            // Send the data asynchronously to the backend
+            fetch('/follow_task_complete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Username submission response:', result);
+                if (result.message) {
+                    alert(result.message);
+                }
+                // Close the username modal
+                hideUsernameModal();
+                // Optionally, check if all required follows are completed
+                // hideErrorPopup();
+                // Continue the game (if applicable)
+            })
+            .catch(error => {
+                console.error('Error submitting username:', error);
+                alert('There was an error submitting your username. Please try again.');
+            });
+        });
+        
+        // Periodic POST request every 3 seconds
+        setInterval(() => {
+            const amountPoint = parseFloat(stopScore) || 0;
+        
+            fetch('/given_points_airdrop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "amount_point": amountPoint
+                })
+            })
+            .then(response => response.json().then(data => ({status: response.status, body: data})))
+            .then(({status, body}) => {
+                console.log('Backend response:', body);
+                if (body.error) {
+                    console.error('Backend error:', body.error);
+                    // Show the popup with the error message
+                    showErrorPopup(body.error);
+                } else {
+                    // Update the balance in the HTML
+                    balanceElement.innerText = `Airdrop Points: + ${body.balance}`;
+                    if (body.pending_balance) {
+                        balanceElement.innerText += ` (Pending: + ${body.pending_balance})`;
+                    }
+                }
+            })
+            .catch(error => console.error('Error in POST request:', error));
+        
+        }, 3000); // 3000 ms = 3 seconds
+        
+        // Function to handle automatic rotation of mainImage
+        function updateMainImageRotation(timestamp) {
+            if (!lastFrameTime) {
+                lastFrameTime = timestamp;
+                requestAnimationFrame(updateMainImageRotation);
+                return;
+            }
+        
+            const deltaTime = (timestamp - lastFrameTime) / 1000; // In seconds
+            lastFrameTime = timestamp;
+        
+            if (mainImageRotationSpeed !== 0) {
+                mainImageRotationY += mainImageRotationSpeed * deltaTime;
+                mainImage.style.transform = `translate(-50%, -50%) rotateY(${mainImageRotationY}deg)`;
+            }
+        
+            // Control sound playback based on rotation speed and user interaction
+            if (Math.abs(mainImageRotationSpeed) > 0.1 && !wasRotating && userInteracted) { // Use a small threshold to avoid unwanted sounds
+                spinnerSound.play().catch((e) => {
+                    console.log('Error playing sound:', e);
+                });
+                wasRotating = true;
+            } else if (Math.abs(mainImageRotationSpeed) <= 0.1 && wasRotating) {
+                spinnerSound.pause();
+                spinnerSound.currentTime = 0; // Reset sound
+                wasRotating = false;
+            }
+        
+            requestAnimationFrame(updateMainImageRotation);
+        }
+        
+        // Start automatic rotation
+        requestAnimationFrame(updateMainImageRotation);
+    </script>
+</body>
+</html>

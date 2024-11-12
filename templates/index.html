@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>MINI | Memecoin & AI Feature</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini AI</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='img/favicon.png') }}"
+    />
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/meanmenu.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='scss/main.css') }}" />
+  </head>
+
+  <body>
+    <!-- sidebar-information-area-start -->
+    <div class="sidebar-info side-info">
+      <div class="sidebar-logo-wrapper mb-25">
+        <div class="row align-items-center">
+          <div class="col-xl-6 col-8">
+            <div class="sidebar-logo">
+              <a href="{{ url_for('static', filename='index.html') }}">
+                <img src="{{ url_for('static', filename='img/b-logo.svg') }}" alt="logo-img" />
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-6 col-4">
+            <div class="sidebar-close-wrapper text-end">
+              <button class="sidebar-close side-info-close">
+                <i class="fal fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-menu-wrapper fix">
+        <div class="mobile-menu"></div>
+      </div>
+
+      <div class="sidebar-contact-wrapper mt-40">
+        <div class="sidebar-contact mt-3">
+          <!-- <h4 class="sidebar-contact-title">Contact Info</h4> -->
+          <!-- <a href="#" class="header-btn prim-btn d-xl-none ">Join Discord</a> -->
+          <div class="header-icons mt-4 mb-4 text-center">
+            <a href="https://discord.gg/dalas">
+              <img src="{{ url_for('static', filename='img/social-icons/dis.png') }}" alt="discord">
+            </a>
+          </div>
+          <!--<a href="#" class="header-btn">
+            <div class="btn-inner">
+              Connect Wallet
+            </div>-->
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="offcanvas-overlay"></div>
+    <!-- sidebar-information-area-end -->
+    <div class="popup-overlay"></div>
+    <!-- header area start -->
+    <header class="header-area ">
+      <div class="header-menu">
+        <div class="container">
+          <div class="menu-wrap">
+            <div class="header-logo">
+              <a href="{{ url_for('static', filename='index.html') }}">
+                <img src="{{ url_for('static', filename='img/b-logo.svg') }}" alt="Brand logo" />
+              </a>
+            </div>
+            <div class="menu-buttons d-flex">
+              <nav class="main-menu mobile-menu d-none d-xxl-block" id="mobile-menu">
+                <ul>
+                  <li><a href="#">MINI</a></li>
+                  <li><a href="/white_paper">Whitepaper</a></li>
+                  <li><a href="https://t.me/MINIMEME_BOT">Airdrop</a></li>
+                  <li><a href="#Tokenomics">Tokenomics</a></li>
+                  <li><a href="https://x.com/MINI_MEME_AI">X official-account</a></li>
+                </ul>
+              </nav>
+
+              <div class="menu-btn d-flex align-items-center">
+                <div class="header-icons d-none d-lg-flex">
+                  <a href="https://discord.gg/Dalas" class="dis-icon">
+                    <img src="{{ url_for('static', filename='img/social-icons/dis.png') }}" alt="discord">
+                    <span>join discord</span>
+                  </a>
+                  
+                  <a href="https://t.me/minimemeai" class="header-btn">
+                    <div class="btn-inner">
+                      Telegram
+                    </div>
+                  </a>
+                  
+                </div>
+                <div class="menu-bar d-xxl-none">
+                  <div class="navbar-sign side-toggle ml-20">
+                    <span class="menu-line-1"></span>
+                    <span class="menu-line-2"></span>
+                    <span class="menu-line-3"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- header area end -->
+    <!-- banner start -->
+    <div class="banner">
+      <div class="container d-flex flex-column align-items-center">
+        <div class="banner-left-shape"></div>
+        <div class="banner-right-shape"></div>
+        <a href="/login" class="banner-btn">
+          <img src="{{ url_for('static', filename='img/banner/btn-gmini.png') }}" alt="">
+          <span>Explore Features</span>
+        </a>
+        <h1>
+          Discover The Transformative Power Of <span>MINI</span>
+        </h1>
+        <p class="banner-desc">From Solana to emerging meme-coins, Discover how a growing Community Drives the future of Crypto with MINI. Where potential & fun meet</p>
+        <div class="buttons">
+          <a href="/white_paper" class="b-btn1 header-btn">
+            <div class="btn-inner">
+              Whitepaper
+            </div>
+          </a>
+          <a href="https://raydium.io/swap/?inputMint=9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump&outputMint=sol" class="b-btn2 header-btn">
+            <div class="btn-inner">
+              Buy MINI
+            </div>
+          </a>
+        </div>
+        <div class="banner-values">
+          <div class="box">
+            <span class="box-num">1</span>
+            <span class="box-name">Token Price</span>
+          </div>
+          <div class="box">
+            <span class="box-num">$0</span>
+            <span class="box-name">24 Volume </span>
+          </div>
+          <div class="box">
+            <span class="box-num">$7k</span>
+            <span class="box-name"> Liquidity</span>
+          </div>
+          <div class="box">
+            <span class="box-num">$7k</span>
+            <span class="box-name">FDV</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- banner-end -->
+    <!-- Whitepaper start -->
+    <div class="whitepaper">
+      <div class="container">
+        <div class="whitepaper-wrapper" style="display:none;">
+          <div class="whitepaper-box">
+            <img src="{{ url_for('static', filename='img/white/search.png') }}" alt="search">
+            <div class="white-single-box">
+              <h5 class="box-title">trade with confidence</h5>
+              <p>assured that you maintain full authority</p>
+              <img src="{{ url_for('static', filename='img/white/trade.png') }}" alt="trade">
+            </div>
+          </div>
+          <div class="whitepaper-box">
+            <div class="white-single-box">
+              <h5 class="box-title">fear and greed index</h5>
+              <span class="greed-btn">Greed:78</span>
+              <img src="{{ url_for('static', filename='img/white/greed.png') }}" alt="greed img">
+            </div>
+            <div class="white-single-box">
+              <!-- <h5 class="box-title">quick swap</h5> -->
+              <!-- <img src="{{ url_for('static', filename='img/white/swap.png') }}" alt="swap"> -->
+              <div id="integrated-terminal" style="width: 390px; height: 310px;"></div>
+            </div>
+          </div>
+          <div class="whitepaper-box">
+            <img src="{{ url_for('static', filename='img/white/mn-g.png') }}" alt="">
+          </div>
+          <div class="whitepaper-box">
+            <div class="white-single-box">
+              <span class="token-price-title">Token Price</span>
+              <h4 class="token-price">$0.0005</h4>
+              <div class="solana-matic">
+                <div class="solana single-coin">
+                  <img src="{{ url_for('static', filename='img/white/s-icon.png') }}" alt="" class="solana-icon">
+                  <span class="coin-name">SOLANNA</span>
+                  <span class="coin-price">$25,855.31</span>
+                  <img src="{{ url_for('static', filename='img/white/sol-flag.png') }}" alt="" class="flag">
+                  <span class="coin-percent">
+                    <span class="c-name">SOLANA</span>
+                    <span class="c-percent">50%</span>
+                  </span>
+                </div>
+                <div class="matic single-coin">
+                  <img src="{{ url_for('static', filename='img/white/matic-i.png') }}" alt="" class="matic-icon">
+                  <span class="coin-name">Mini</span>
+                  <span class="coin-price">$19,613.37</span>
+                  <img src="{{ url_for('static', filename='img/white/matic-flag.png') }}" alt="" class="flag">
+                  <span class="coin-percent">
+                    <span class="c-name">Mini</span>
+                    <span class="c-percent">50%</span>
+                  </span>
+                </div>
+              </div>
+              <a href="#" class="deposit-btn">Stake(soon)</a>
+            </div>
+            <div class="wallet-btn">
+              <a href="#" class="wallet">wallet</a>
+              <span>pools</span>
+            </div>
+          </div>
+          <div class="whitepaper-box">
+            <div class="news-box">
+              <span class="news-date">Aug 1, 2024</span>
+              <p>Mini surges to new all-time high amidst growing Community Interest</p>
+              <img src="{{ url_for('static', filename='img/white/line.png') }}" alt="">
+            </div>
+            <div class="ethereum-box">
+              <div class="ethereum-titles"> 
+                <span class="name">SOLANA</span>
+                <span class="date">7 DAYS</span>
+              </div>
+              <div class="ethereum-desc">
+                <span>1</span>
+                <p>SOLANA’S ACTIVE NODES</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Whitepaper end -->
+    <!-- tokenomics start -->
+    <div class="tokenomics" id="Tokenomics">
+      <div class="container">
+        <div class="sec-heading">
+          <img src="{{ url_for('static', filename='img/toke-h.png') }}" alt="">
+          <h2>Tokenomics <span>MINI</span></h2>
+        </div>
+        <div class="tokenomics-content">
+          <div class="row align-items-center">
+            <!-- <div class="col-lg-1"></div> -->
+            <div class="col-lg-7">
+              <div class="chart-wrapper">
+                <canvas id="doughnutChart" width="100%" height="100%"></canvas>
+                <div class="chart-center">
+                  <div class="chart-center-content">
+                    <h3 class="supply-title">Total Supply</h3>
+                    <img src="{{ url_for('static', filename='img/toke/token-img.png') }}" alt="token">
+                    <h3 class="supply-value">1000.000.000</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="toke-text-content">
+                <div class="toke-desc-box">
+                  <span class="percent">6.9%</span>
+                  <div class="toke-desc">
+                    <h4>Treasury</h4>
+                    <p>Dalas Wallet</p>
+                  </div>
+                </div>
+                <div class="toke-desc-box">
+                  <span class="percent">93.1%</span>
+                  <div class="toke-desc">
+                    <h4>Public Market </h4>
+                    
+                  </div>
+                </div>
+                <!--
+                <div class="toke-desc-box">
+                  <span class="percent">50%</span>
+                  <div class="toke-desc">
+                    <h4>Team & Advisors</h4>
+                    <p>On LockedWallet</p>
+                  </div>
+                </div>
+                <div class="toke-desc-box">
+                  <span class="percent">15%</span>
+                  <div class="toke-desc">
+                    <h4>Rewards</h4>
+                    <p>Digital Mining, Pools & Staking</p>
+                  </div>
+                </div>
+                <div class="toke-desc-box">
+                  <span class="percent">20%</span>
+                  <div class="toke-desc">
+                    <h4>Development</h4>
+                    <p>Digital Mining, Pools & Staking</p>
+                  </div>
+                </div>
+                -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- tokenomics end -->
+    <div class="footer">
+      <div class="container d-flex justify-content-center">
+        <div class="footer-content">
+          <a href="#">
+            <img src="{{ url_for('static', filename='img/footer/f1.png') }}" alt="">
+          </a>
+          <img src="{{ url_for('static', filename='img/footer/f-line.png') }}" alt="">
+          <a href="#">
+            <img src="{{ url_for('static', filename='img/footer/f2.png') }}" alt="">
+          </a>
+
+          <span class="bg-shape"></span>
+        </div>
+      </div>
+    </div>
+
+ 
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Seleccionar los elementos donde se mostrarán los datos
+  const priceElement = document.querySelector(".banner-values .box:nth-child(1) .box-num");
+  const volumeElement = document.querySelector(".banner-values .box:nth-child(2) .box-num");
+  const liquidityElement = document.querySelector(".banner-values .box:nth-child(3) .box-num");
+  const fdvElement = document.querySelector(".banner-values .box:nth-child(4) .box-num");
+
+  // Función para formatear números con comas para miles y millones
+  const formatNumber = (num) => {
+    return num.toLocaleString('en-US');
+  };
+
+  // Función para formatear el precio manteniendo los decimales
+  const formatPrice = (num) => {
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 });
+  };
+
+  // Función para obtener los datos del servidor y actualizar el contenido 
+  const fetchData = () => {
+    fetch("/get_charts_token")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error en la respuesta de la red");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const tokenAddress = "9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump"; // Reemplaza con la dirección correcta del token
+        if (data[tokenAddress]) {
+          priceElement.innerText = `$${formatPrice(data[tokenAddress].price)}`;
+          volumeElement.innerText = `$${formatNumber(data[tokenAddress]['24h_volume'])}`;
+          liquidityElement.innerText = `$${formatNumber(data[tokenAddress].liquidity)}`;
+          fdvElement.innerText = `$${formatNumber(data[tokenAddress].fdv)}`;
+        } else {
+          console.error("No se encontraron datos para el token");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos: ", error);
+      });
+  };
+
+  // Llamar a fetchData cada 1 minuto
+  setInterval(fetchData, 60000);
+
+  // Llamar a fetchData inicialmente
+  fetchData();
+});
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.meanmenu.min.js') }}"></script>
+    <script src="https://terminal.jup.ag/main-v3.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+      </body>
+</html>

@@ -1,0 +1,207 @@
+/* General body styling */
+*{
+  font-family: 'Mulish';
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #000;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for the whole layout */
+.container {
+    display: flex;
+    max-width: 80%;
+    width: 100%;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Left section (Login form) */
+.sesion_login {
+    background-color: #0e0e0e;
+    width: 50%;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+h1, p {
+    color: white;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 19px;
+    margin-bottom: 5px;
+    display: block;
+    color: #aaa;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    background-color: #000000;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    box-sizing: border-box;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3f8e9c;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #155ab6;
+}
+
+/* Google Sign-in button */
+.google-signin {
+    background-color: white;
+    color: #000;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.google-signin img {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+/* Additional Links */
+.additional-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.additional-links a {
+    color: #3f8e9c;
+    text-decoration: none;
+    font-size: 19px;
+    
+}
+
+.additional-links a:hover {
+    text-decoration: underline;
+}
+
+/* Right section (Image section) */
+.image-section {
+    width: 50%;
+    background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.image-section .overlay-text {
+    font-size: 100px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Global font size */
+* {
+    font-size: 19px;
+    box-sizing: border-box;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Tablets and smaller devices */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sesion_login, .image-section {
+        width: 100%;
+    }
+
+    .sesion_login {
+        padding: 20px;
+    }
+
+    .image-section .overlay-text {
+        font-size: 50px; /* Reduce font size for overlay text */
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 17px;
+    }
+
+    .input-group label, .input-group input, button, .google-signin, .additional-links a {
+        font-size: 16px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    body {
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .image-section .overlay-text {
+        font-size: 30px; /* Further reduce font size for smaller screens */
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+
+    .input-group label, .input-group input, button, .google-signin, .additional-links a {
+        font-size: 14px;
+    }
+}

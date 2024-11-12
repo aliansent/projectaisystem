@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/lib/index.iife.min.js"></script>
+    <style>
+        /* Basic reset and global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Mulish', Arial, sans-serif;
+        }
+
+        body {
+            font-family: 'Mulish', Arial, sans-serif;
+            background-color: #0d0c0e;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            padding: 0.5rem 1rem;
+            background-color: #1f1f1f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 10px;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .navbar-buttons button {
+            padding: 8px 12px;
+            background-image: linear-gradient(to right, #00cc99, #33ccff);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .navbar-toggler {
+            display: none;
+            font-size: 1.5rem;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .navbar-toggler .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-toggler.open .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .navbar-toggler.open .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar-toggler.open .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background-color: #000;
+            padding: 20px;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar .navbar-buttons {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar .navbar-buttons {
+                display: block;
+            }
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: calc(100% - 270px);
+            overflow-y: auto;
+            height: calc(100vh - 70px);
+        }
+
+        .content-item {
+            background-image: linear-gradient(to right, rgba(0, 204, 153, 0.8), rgba(51, 204, 255, 0.8));
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .content-item:hover {
+            transform: scale(1.05);
+        }
+
+        .content-item .alert-server {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .copy-button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background-color: #218838;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar-toggler {
+                display: block;
+            }
+
+            .navbar-buttons {
+                display: none;
+            }
+
+            .sidebar {
+                width: 200px;
+                left: -100%;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">MyBrand</a>
+        <button class="navbar-toggler" id="navbar-toggler">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </button>
+        <div class="navbar-buttons">
+            <button id="connect-wallet">Connect Wallet Phantom</button>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="navbar-buttons">
+            <button id="connect-wallet-sidebar">Connect Wallet Phantom</button>
+        </div>
+    </div>
+
+    <div class="content" id="content">
+        <div class="content-item">Content Item 1</div>
+        <div class="content-item">Content Item 2</div>
+        <div class="content-item">Content Item 3</div>
+        <div class="content-item">Content Item 4</div>
+        <div class="content-item">Content Item 5</div>
+    </div>
+
+    <script>
+        const toggler = document.getElementById('navbar-toggler');
+        const sidebar = document.getElementById('sidebar');
+        const connectWalletButtons = document.querySelectorAll('#connect-wallet, #connect-wallet-sidebar');
+        const content = document.getElementById('content');
+
+        toggler.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            toggler.classList.toggle('open');
+        });
+
+        connectWalletButtons.forEach(button => {
+            button.addEventListener('click', async (event) => {
+                event.preventDefault();
+
+                // Check if a Solana wallet is available
+                let provider;
+                if (window.solana && window.solana.isPhantom) {
+                    provider = window.solana;
+                } else if (window.solflare && window.solflare.isSolflare) {
+                    provider = window.solflare;
+                } else {
+                    alert('Please install Phantom or Solflare wallet extension.');
+                    return;
+                }
+
+                try {
+                    // Connect to the wallet
+                    const resp = await provider.connect();
+
+                    // Get the public key
+                    let publicKey;
+                    if (resp && resp.publicKey) {
+                        publicKey = resp.publicKey.toString();
+                    } else if (provider.publicKey) {
+                        publicKey = provider.publicKey.toString();
+                    } else {
+                        throw new Error('Could not get the public key after connecting.');
+                    }
+
+                    console.log('Connected to the wallet:', publicKey);
+
+                    // Send the wallet address to the server
+                    const serverResponse = await fetch('/get_mys_website', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ wallet: publicKey })
+                    });
+
+                    const items = await serverResponse.json();
+
+                    // Render the new items in the content
+                    items.forEach(item => {
+                        const newItem = document.createElement('div');
+                        newItem.classList.add('content-item');
+                        newItem.innerHTML = `
+                            <h3>${item.title_web}</h3>
+                            <p>URL: <a href="${item.url_website}" target="_blank">${item.url_website}</a></p>
+                            <button class="copy-button" onclick="navigator.clipboard.writeText('${item.url_website}')">Copy URL</button>
+                            <p>Donations: $${item.donations}</p>
+                            <div class="alert-server">${item.alert_server}</div>
+                        `;
+                        content.appendChild(newItem);
+                    });
+                } catch (err) {
+                    console.error('Error connecting to the wallet:', err);
+                    alert('Error connecting to the wallet: ' + err.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

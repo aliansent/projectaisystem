@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MINI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <!-- Import Google font similar to Helvetica Neue -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Mulish', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom right, rgba(255, 0, 0, 0.6), rgba(0, 0, 255, 0.6)), url('path-to-your-background-image.jpg');
+            background-size: cover;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+    
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            height: auto;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+        }
+    
+        /* Left Section - Login Form */
+        .sesion_login {
+            width: 100%;
+            max-width: 400px;
+            color: white;
+            text-align: center;
+        }
+    
+        .sesion_login h1 {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+    
+        .sesion_login p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+    
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+    
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.3s;
+        }
+    
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+    
+        button[type="submit"]:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+    
+        .additional-links {
+            margin-top: 20px;
+        }
+    
+        .additional-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+    
+        .additional-links a:hover {
+            opacity: 1;
+        }
+    
+        /* Right Section - Image Overlay */
+        .image-section {
+            display: none; /* Hide right image section for simplicity, make visible if needed */
+        }
+    
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .image-section {
+                display: none; /* Hide image section in mobile view */
+            }
+        }
+    </style>
+    </head>
+<body>
+
+<div class="container">
+
+    <!-- Left Section: Login Form -->
+    <div class="sesion_login">
+       <a href="/"> <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 100px;"></a>
+        <h1>Welcome back to Trump Verse!</h1>
+        <p>There wrie descripcion.</p>
+        
+        <div class="input-group">
+            <label for="text" >Username</label>
+            <input type="text" id="username" placeholder="Enter your email address" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" id="send-list-button">Sign In</button>
+
+
+        <div class="additional-links">
+            <a href="/telegram_airdrop">Get Airdrop</a>
+            <a href="/sign-up">Sign Up</a>
+        </div>
+    </div>
+
+    <!-- Right Section: Image and Overlay Text -->
+    <div class="image-section">
+        <div class="overlay-text"></div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script>
+
+    const sendListButton = document.getElementById('send-list-button');
+    sendListButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const typechat = "MINI";
+
+    // Check if typechat is empty PAMBI 2.0
+    if (!typechat) {
+        alert('You must select at least one LIVEM version you wish to chat with');
+        return;
+    }
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const xhr = new XMLHttpRequest();
+    const url = 'login_action';
+
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function() {
+        const response = JSON.parse(xhr.responseText);
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            if (response.error == "cuote_expired_month"){
+                alert("You do not have enough credits, please recharge more MINI tokens in your account");
+            } else if (response.success == true) {
+                // Redirigir al chat usando el username proporcionado por el backend
+                var url = 'chat/' + response.hashchat + "/" + response.username + "/" + response.hash_invite;
+                window.location.href = url;
+            } else {
+                alert(response.error);
+            }
+        }else if (xhr.readyState === 4 && xhr.status === 401){
+            alert(response.error);
+        }
+    }
+
+    const data = JSON.stringify({ username: username, password: password, typechat: typechat});
+    xhr.send(data);
+});
+
+function toggleMenu() {
+    var element = document.querySelector('.navbar-toggler');
+    var navbar = document.querySelector('.navbar-collapse');
+
+    if (navbar.classList.contains('show')) {
+        navbar.classList.remove('show');
+        element.classList.remove('opened');
+        element.classList.add('closed');
+    } else {
+        navbar.classList.add('show');
+        element.classList.remove('closed');
+        element.classList.add('opened');
+    }
+}
+    </script>
+</body>
+</html>

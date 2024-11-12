@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deposit MINI Token</title>
+
+  <!-- Import Google font similar to Helvetica Neue -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css', cache_timeout=0) }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/profile.css', cache_timeout=0) }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+  
+
+  <style>
+    /* General body styling */
+  /* General body styling */
+* {
+  font-family: 'Mulish', 'Roboto', Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Container for the whole layout */
+.container-wrapper {
+  margin-top: 100px;
+  display: flex;
+  width: 80%;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  background-color: #0e0e0e; /* Añadido para coincidir con .sesion_login */
+  padding: 20px
+}
+
+/* Left section (Deposit/Login form) */
+.left-section {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #0e0e0e; /* Coincide con .sesion_login */
+}
+
+.left-section h1, 
+.left-section p {
+  color: white;
+}
+
+.left-section h1 {
+  font-size: 28px; /* Ajustado para coincidir con el primer código */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.left-section p {
+  font-size: 18px; /* Ajustado para coincidir con el primer código */
+  line-height: 1.5;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.left-section .input-group {
+  margin-bottom: 20px;
+}
+
+.left-section .input-group label {
+  font-size: 17px;
+  margin-bottom: 5px;
+  display: block;
+  color: #aaa;
+}
+
+.left-section .input-group input {
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+/* Button styling */
+.btn-custom, 
+.left-section button {
+  width: 100%;
+  padding: 10px;
+  background-color: #3f8e9c;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-custom:hover, 
+.left-section button:hover {
+  background-color: #155ab6;
+}
+
+/* Google Sign-in button */
+.google-signin {
+  background-color: white;
+  color: #000;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.google-signin img {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.google-signin:hover {
+  background-color: #e0e0e0;
+}
+
+/* Additional Links */
+.additional-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.additional-links a {
+  color: #3f8e9c;
+  text-decoration: none;
+  font-size: 19px;
+}
+
+.additional-links a:hover {
+  text-decoration: underline;
+}
+
+/* Copy Button styling */
+.copy-button {
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #155ab6;
+}
+
+/* Alert styling */
+#alertMessage {
+  font-size: 16px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px white;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #333;
+  display: none;
+}
+
+/* Right section (Image section) */
+.image-section {
+  width: 50%;
+  background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.image-section .overlay-text {
+  font-size: 80px; /* Ajustado para coincidir con el primer código */
+  font-weight: bold;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-wrapper {
+    width: 90%;
+    margin-top: 50px;
+    padding: 10px;
+    flex-direction: column;
+  }
+  .left-section, .image-section {
+    width: 100%;
+  }
+  .image-section {
+    height: 200px;
+  }
+  .image-section .overlay-text {
+    font-size: 50px;
+  }
+  
+  .left-section h1 {
+    font-size: 20px;
+  }
+
+  .left-section p {
+    font-size: 17px;
+  }
+
+  .left-section .input-group label, 
+  .left-section .input-group input, 
+  .btn-custom, 
+  .google-signin, 
+  .additional-links a {
+    font-size: 16px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  body {
+    height: auto;
+    padding: 20px 0;
+  }
+
+  .container-wrapper {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .image-section .overlay-text {
+    font-size: 30px;
+  }
+
+  .left-section h1 {
+    font-size: 18px;
+  }
+
+  .left-section p {
+    font-size: 15px;
+  }
+
+  .left-section .input-group label, 
+  .left-section .input-group input, 
+  .btn-custom, 
+  .google-signin, 
+  .additional-links a {
+    font-size: 14px;
+  }
+}
+/* Personalizar la barra de scroll en navegadores basados en WebKit */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #333; /* Fondo de la pista de la scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3a8592, #155ab6); /* Gradiente en el "thumb" */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ab6, #3f8e9c); /* Gradiente al pasar el mouse */
+}
+
+  </style>
+</head>
+<body>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Deposit MINI Token</title>
+  
+      <!-- Import Google font similar to Helvetica Neue -->
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+      <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+      <style>
+  /* General body styling */
+  *{
+    font-family: 'Mulish';
+  }
+  body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+  }
+  
+  /* Container for the whole layout */
+  .container-wrapper {
+      
+      display: flex;
+      width: 85%;
+      box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+  }
+  
+  /* Left section (Deposit form) */
+  .deposit-section {
+      background-color: #0e0e0e;
+      width: 50%;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+      text-align: center;
+  }
+  
+  h1, p {
+      color: white;
+  }
+  
+  h1 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      text-align: center;
+  }
+  
+  p {
+      font-size: 19px;
+      line-height: 1.5;
+      margin-bottom: 30px;
+      text-align: center;
+  }
+  
+  h3 {
+      font-size: 20px;
+      margin-bottom: 20px;
+  }
+  
+  .input-group {
+      margin-bottom: 20px;
+  }
+  
+  .input-group label {
+      font-size: 19px;
+      margin-bottom: 5px;
+      display: block;
+      color: #aaa;
+  }
+  
+  .input-group input {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      box-sizing: border-box;
+  }
+  
+  /* Button styling */
+  button, .btn-custom {
+      width: 100%;
+      padding: 10px;
+      background-color: #3f8e9c;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background-color 0.3s ease;
+  }
+  
+  button:hover, .btn-custom:hover {
+      background-color: #155ab6;
+  }
+  
+  /* Additional Links */
+  .additional-links {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+  }
+  
+  .additional-links a {
+      color: #3f8e9c;
+      text-decoration: none;
+      font-size: 19px;
+      transition: text-decoration 0.3s ease;
+  }
+  
+  .additional-links a:hover {
+      text-decoration: underline;
+  }
+  
+  /* Right section (Image section) */
+  .image-section {
+      width: 50%;
+      background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+  }
+  
+  .image-section .overlay-text {
+      font-size: 100px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  }
+  
+  /* Media Queries for Responsive Design */
+  
+  /* Tablets and smaller devices */
+  @media (max-width: 768px) {
+      .container-wrapper {
+          flex-direction: column;
+      }
+  
+      .deposit-section, .image-section {
+          width: 100%;
+      }
+  
+      .deposit-section {
+          padding: 20px;
+      }
+  
+      .image-section {
+          display: none;
+      }
+  
+      .image-section .overlay-text {
+          font-size: 50px;
+      }
+  
+      h1, h3 {
+          font-size: 20px;
+      }
+  
+      p {
+          font-size: 17px;
+      }
+  
+      .input-group label, .input-group input, button, .additional-links a {
+          font-size: 16px;
+      }
+  }
+  
+  /* Mobile devices */
+  @media (max-width: 480px) {
+      body {
+          height: auto;
+          padding: 20px 0;
+      }
+  
+      .container-wrapper {
+          box-shadow: none;
+          border-radius: 0;
+      }
+  
+      .image-section .overlay-text {
+          font-size: 30px;
+      }
+  
+      h1, h3 {
+          font-size: 18px;
+      }
+  
+      p {
+          font-size: 15px;
+      }
+  
+      .input-group label, .input-group input, button, .additional-links a {
+          font-size: 14px;
+      }
+  }
+  
+  /* High-resolution devices */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .image-section .overlay-text {
+          text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+      }
+  }
+  
+      </style>
+  </head>
+  <body>
+  
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Depositar MINI Token</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <style>
+            /* Estilos personalizados */
+            .container-wrapper {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                padding: 20px;
+            }
+            .deposit-section, .image-section {
+                width: 50%;
+                padding: 20px;
+            }
+            .btn-custom {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+            .btn-custom:hover {
+                background-color: #45a049;
+            }
+            .progress {
+                height: 25px;
+                margin-bottom: 20px;
+            }
+            .progress-bar {
+                line-height: 25px;
+                font-size: 14px;
+            }
+            .alert {
+                display: none;
+                margin-top: 20px;
+            }
+            .additional-links a {
+                margin-right: 10px;
+            }
+        </style>
+        
+        <!-- Librerías Solana Web3 -->
+        <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+        
+        <!-- jQuery, Popper.js y Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                // Constantes
+                const TOKEN_MINT_ADDRESS = '9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump';  // Dirección del mint del token MINI
+                const TOKEN_DECIMALS = 6;  // Número de decimales del token SPL
+                const TOKEN_MINT_PUBLIC_KEY = new solanaWeb3.PublicKey(TOKEN_MINT_ADDRESS);
+                const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+                const ASSOCIATED_TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"); // Usar el mismo ID que en el código que funciona
+                const BACKEND_GET_COST_URL = '/get_cost_publish';
+                const BACKEND_PUBLISH_ACTION_URL = '/publish_action_website';
+                const HASHCHAT = '{{hashchatsession}}';
+                const RPC_URL = 'http://127.0.0.1:8080/solana_chain'; // Reemplaza con tu propio URL de QuickNode
+                const PROJECT_WALLET_ADDRESS = '{{ wallet_project }}';
+                const PROJECT_PUBLIC_KEY = new solanaWeb3.PublicKey(PROJECT_WALLET_ADDRESS);
+                
+                // Elementos del DOM
+                const connectWalletButton = document.getElementById('connect-wallet-button');
+                const walletAddressInput = document.getElementById('walletAddress');
+                const depositAmountInput = document.getElementById('depositAmount');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                const nextStep1Button = document.getElementById('next-step-1');
+                const nextStep2Button = document.getElementById('next-step-2');
+                const performDepositButton = document.getElementById('perform-deposit');
+                const alertMessage = document.getElementById('alertMessage');
+                
+                let userPublicKey = null;
+                let connection = new solanaWeb3.Connection(RPC_URL, 'confirmed');
+                
+                // Función para actualizar la barra de progreso
+                function updateProgress(step) {
+                    const progress = (step / 3) * 100;
+                    progressBar.style.width = progress + '%';
+                    progressBar.innerText = `Paso ${step} de 3`;
+                }
+                
+                // Función para mostrar mensajes de alerta
+                function showAlert(message, type) {
+                    alertMessage.style.display = 'block';
+                    alertMessage.className = `alert ${type}`;
+                    alertMessage.innerText = message;
+                    
+                    setTimeout(() => {
+                        alertMessage.style.display = 'none';
+                    }, 5000);
+                }
+                
+                // Función para obtener la dirección de token asociada
+                async function getAssociatedTokenAddress(mint, owner) {
+                    return (await solanaWeb3.PublicKey.findProgramAddress(
+                        [
+                            owner.toBuffer(),
+                            TOKEN_PROGRAM_ID.toBuffer(),
+                            mint.toBuffer(),
+                        ],
+                        ASSOCIATED_TOKEN_PROGRAM_ID
+                    ))[0];
+                }
+                
+                // Función para crear instrucciones de cuenta de token asociada
+                function createAssociatedTokenAccountInstruction(payer, ata, owner, mint) {
+                    const keys = [
+                        { pubkey: payer, isSigner: true, isWritable: true },
+                        { pubkey: ata, isSigner: false, isWritable: true },
+                        { pubkey: owner, isSigner: false, isWritable: false },
+                        { pubkey: mint, isSigner: false, isWritable: false },
+                        { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+                        { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+                    ];
+                    return new solanaWeb3.TransactionInstruction({
+                        keys,
+                        programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+                        data: new Uint8Array(0),
+                    });
+                }
+                
+                // Función para crear instrucciones de transferencia verificadas
+                function createTransferCheckedInstruction(source, mint, destination, owner, amount, decimals) {
+                    const data = new Uint8Array(10);
+                    const dataView = new DataView(data.buffer);
+            
+                    dataView.setUint8(0, 12); // Índice de instrucción para TransferChecked
+                    dataView.setBigUint64(1, BigInt(amount), true); // Monto en little-endian
+                    dataView.setUint8(9, decimals); // Decimales del token
+            
+                    const keys = [
+                        { pubkey: source, isSigner: false, isWritable: true },
+                        { pubkey: mint, isSigner: false, isWritable: false },
+                        { pubkey: destination, isSigner: false, isWritable: true },
+                        { pubkey: owner, isSigner: true, isWritable: false },
+                    ];
+            
+                    return new solanaWeb3.TransactionInstruction({
+                        keys,
+                        programId: TOKEN_PROGRAM_ID,
+                        data: data,
+                    });
+                }
+                
+                // Función de polling para confirmar la transacción con timeout
+                async function waitForConfirmation(connection, signature, timeout = 120000, interval = 5000) {
+                    const startTime = Date.now();
+            
+                    return new Promise((resolve, reject) => {
+                        const timer = setInterval(async () => {
+                            try {
+                                const status = await connection.getSignatureStatus(signature);
+                                const confirmation = status && status.value && (status.value.confirmationStatus === 'confirmed' || status.value.confirmationStatus === 'finalized');
+            
+                                if (confirmation) {
+                                    clearInterval(timer);
+                                    resolve(status.value);
+                                } else if (Date.now() - startTime > timeout) {
+                                    clearInterval(timer);
+                                    reject(new Error('Tiempo de espera para la confirmación de la transacción agotado.'));
+                                }
+                            } catch (error) {
+                                clearInterval(timer);
+                                reject(error);
+                            }
+                        }, interval);
+                    });
+                }
+                
+                // Evento para conectar la wallet
+                connectWalletButton.addEventListener('click', async () => {
+                    if (window.solana && window.solana.isPhantom) {
+                        try {
+                            // Conectar a Phantom Wallet
+                            const resp = await window.solana.connect();
+                            userPublicKey = resp.publicKey;
+                            walletAddressInput.value = userPublicKey.toString();
+                            updateProgress(1);
+                            showAlert('Wallet conectada exitosamente!', 'alert-success');
+                        } catch (err) {
+                            console.error('Error al conectar la wallet:', err);
+                            showAlert('Error al conectar la wallet.', 'alert-danger');
+                        }
+                    } else {
+                        showAlert('Phantom Wallet no detectada. Por favor, instala la extensión Phantom Wallet.', 'alert-danger');
+                    }
+                });
+                
+                // Evento para avanzar del Paso 1 al Paso 2
+                nextStep1Button.addEventListener('click', () => {
+                    const walletAddress = walletAddressInput.value.trim();
+                    const depositAmount = depositAmountInput.value.trim();
+                    
+                    if (!walletAddress) {
+                        showAlert('Por favor, conecta tu wallet antes de continuar.', 'alert-danger');
+                        return;
+                    }
+                    
+                    if (!depositAmount || isNaN(depositAmount) || parseFloat(depositAmount) <= 0) {
+                        showAlert('Por favor, ingresa una cantidad válida a depositar.', 'alert-danger');
+                        return;
+                    }
+                    
+                    updateProgress(2);
+                    $('.register-face-1').hide();
+                    $('.register-face-2').show();
+                });
+                
+                // Evento para avanzar del Paso 2 al Paso 3
+                nextStep2Button.addEventListener('click', () => {
+                    const signature = $('#signature').val().trim();
+                    if (!signature) {
+                        showAlert('Por favor, ingresa tu firma de transacción antes de continuar.', 'alert-danger');
+                        return;
+                    }
+                    updateProgress(3);
+                    $('.register-face-2').hide();
+                    $('.register-face-3').show();
+                });
+                
+                // Evento para realizar el depósito
+                performDepositButton.addEventListener('click', async () => {
+                    const signature = $('#signature').val().trim();
+                    
+                    if (!signature) {
+                        showAlert('Por favor, ingresa una firma de transacción válida.', 'alert-danger');
+                        return;
+                    }
+                    
+                    // Simular solicitud de API para confirmar el depósito
+                    $.ajax({
+                        url: '/deposit_confirm', // Endpoint para manejar la confirmación del depósito
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ signature_tx: signature }),
+                        success: function (data) {
+                            if (data.success) {
+                                showAlert('¡Depósito exitoso! Tu saldo se actualizará pronto.', 'alert-success');
+                            } else {
+                                showAlert(data.error || 'Depósito fallido. Por favor, intenta nuevamente.', 'alert-danger');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            showAlert('Error durante el depósito. Por favor, intenta nuevamente.', 'alert-danger');
+                        }
+                    });
+                });
+                
+                // Función para realizar el depósito usando Solana Web3
+                async function performSolanaDeposit(depositAmount) {
+                    if (!userPublicKey) {
+                        showAlert('Por favor, conecta tu wallet antes de realizar un depósito.', 'alert-danger');
+                        return;
+                    }
+                    
+                    try {
+                        // Obtener el costo desde el backend
+                        const response = await fetch(BACKEND_GET_COST_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                wallet: userPublicKey.toString(),
+                                hashchat: HASHCHAT
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        if (data.error) {
+                            showAlert('Error al obtener el costo: ' + data.error, 'alert-danger');
+                            return;
+                        }
+                        
+                        const costAmount = data.cost_amount;
+                        const tokenAmount = Math.round(parseFloat(costAmount) * Math.pow(10, TOKEN_DECIMALS));
+                        
+                        // Obtener o crear las cuentas de token asociadas
+                        const userTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, userPublicKey);
+                        const projectTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, PROJECT_PUBLIC_KEY);
+                        
+                        const transaction = new solanaWeb3.Transaction();
+                        
+                        // Verificar si la cuenta asociada del usuario existe y tiene suficiente balance
+                        const userTokenAccountInfo = await connection.getAccountInfo(userTokenAccountAddress);
+                        let sourceTokenAccount = null;
+                        
+                        if (userTokenAccountInfo !== null) {
+                            const tokenAccountBalanceResponse = await connection.getTokenAccountBalance(userTokenAccountAddress);
+                            const tokenAccountBalance = parseInt(tokenAccountBalanceResponse.value.amount);
+                            if (tokenAccountBalance >= tokenAmount) {
+                                sourceTokenAccount = userTokenAccountAddress;
+                            }
+                        }
+                        
+                        // Si no hay suficiente balance en la ATA, buscar en otras cuentas
+                        if (!sourceTokenAccount) {
+                            const tokenAccounts = await connection.getParsedTokenAccountsByOwner(userPublicKey, {
+                                mint: TOKEN_MINT_PUBLIC_KEY
+                            });
+                            
+                            for (let accountInfo of tokenAccounts.value) {
+                                const balance = parseInt(accountInfo.account.data.parsed.info.tokenAmount.amount);
+                                if (balance >= tokenAmount) {
+                                    sourceTokenAccount = accountInfo.pubkey;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (!sourceTokenAccount) {
+                            showAlert('No tienes suficientes tokens para enviar.', 'alert-danger');
+                            return;
+                        }
+                        
+                        // Verificar si la cuenta asociada del proyecto existe
+                        const projectTokenAccountInfo = await connection.getAccountInfo(projectTokenAccountAddress);
+                        if (projectTokenAccountInfo === null) {
+                            const createProjectATAIx = createAssociatedTokenAccountInstruction(
+                                userPublicKey, // Payer (el usuario paga por la creación)
+                                projectTokenAccountAddress, // ATA a crear
+                                PROJECT_PUBLIC_KEY, // Owner
+                                TOKEN_MINT_PUBLIC_KEY
+                            );
+                            transaction.add(createProjectATAIx);
+                        }
+                        
+                        // Crear instrucción de transferencia
+                        const transferIx = createTransferCheckedInstruction(
+                            sourceTokenAccount,
+                            TOKEN_MINT_PUBLIC_KEY,
+                            projectTokenAccountAddress,
+                            userPublicKey,
+                            tokenAmount,
+                            TOKEN_DECIMALS
+                        );
+                        
+                        transaction.add(transferIx);
+                        
+                        // Establecer fee payer y recent blockhash
+                        transaction.feePayer = userPublicKey;
+                        const latestBlockhash = await connection.getLatestBlockhash();
+                        transaction.recentBlockhash = latestBlockhash.blockhash;
+                        
+                        // Firmar y enviar la transacción
+                        const signedTransaction = await window.solana.signTransaction(transaction);
+                        const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                        
+                        // Esperar la confirmación de la transacción con un timeout de 2 minutos
+                        try {
+                            await waitForConfirmation(connection, signature, 120000, 5000);
+                            showAlert('Pago exitoso! Firma de transacción: ' + signature, 'alert-success');
+                            
+                            // Después del pago exitoso, enviar datos al backend para publicar el sitio web
+                            const publishResponse = await fetch(BACKEND_PUBLISH_ACTION_URL, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    signature_tx: signature,
+                                    hashchat: HASHCHAT
+                                })
+                            });
+                            
+                            const publishData = await publishResponse.json();
+                            if (publishData.error) {
+                                showAlert('Error al publicar el sitio web: ' + publishData.error, 'alert-danger');
+                            } else {
+                                showAlert('¡Sitio web publicado exitosamente! Tu URL es: /website/' + publishData.url_web, 'alert-success');
+                                window.location.href = '/website/' + publishData.url_web;
+                            }
+                        } catch (confirmationError) {
+                            console.error('Error en la confirmación de la transacción:', confirmationError);
+                            showAlert('La transacción está pendiente o falló. Por favor, verifica la firma en Solana Explorer: ' + signature, 'alert-danger');
+                            return;
+                        }
+                        
+                    } catch (err) {
+                        console.error('Ocurrió un error:', err);
+                        showAlert('Ocurrió un error: ' + err.message, 'alert-danger');
+                    }
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <!-- Contenedor Principal -->
+        <div class="container-wrapper">
+            
+            <!-- Sección Izquierda: Formulario de Depósito -->
+            <div class="deposit-section">
+                <center>
+                    <a href="/"> 
+                        <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 100px;">
+                    </a>
+                </center>
+                <h1>Depositar MINI Token</h1>
+                <p>Sigue los pasos a continuación para depositar MINI Tokens en tu cuenta.</p>
+                
+                <!-- Barra de Progreso -->
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;">Paso 0 de 3</div>
+                </div>
+                
+                <!-- Paso 1: Conectar Wallet y Especificar Cantidad -->
+                <div class="register-face-1">
+                    <h3>Paso 1: Conectar tu Wallet y Especificar la Cantidad</h3>
+                    <p>Conecta tu wallet de Solana y especifica la cantidad de MINI Tokens que deseas depositar.</p>
+                    
+                    <div class="input-group mb-3">
+                        <button class="btn btn-primary" id="connect-wallet-button">Conectar Wallet</button>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <label for="walletAddress" class="mr-2">Dirección de Wallet:</label>
+                        <input type="text" class="form-control" id="walletAddress" style="background-color: rgba(0, 0, 0, 0.8);" value="{{ wallet_project_team }}" readonly>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <label for="depositAmount" class="mr-2">Cantidad a Depositar:</label>
+                        <input type="number" class="form-control" id="depositAmount" placeholder="Ingresa la cantidad" min="1" step="any" required>
+                    </div>
+                    
+                    <button class="btn-custom" id="next-step-1">Siguiente</button>
+                </div>
+                
+                <!-- Paso 2: Copiar Dirección de Wallet (Reemplazado por Especificar Cantidad) -->
+                <div class="register-face-2" style="display: none;">
+                    <h3>Paso 2: Copiar la Dirección de Wallet</h3>
+                    <p>Envía tus MINI Tokens a la siguiente dirección de wallet:</p>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="projectWalletAddress" style="background-color: rgba(0, 0, 0, 0.8);" value="{{ wallet_project_team }}" readonly>
+                        <button class="btn-custom" onclick="copyToClipboard()">Copiar Dirección de Wallet</button>
+                    </div>
+                    <button class="btn-custom" id="next-step-2">Siguiente</button>
+                </div>
+                
+                <!-- Paso 3: Confirmar Depósito -->
+                <div class="register-face-3" style="display: none;">
+                    <h3>Paso 3: Confirmar tu Depósito</h3>
+                    <p>Después de enviar los MINI Tokens, por favor ingresa tu firma de transacción para confirmar el depósito.</p>
+                    <div class="input-group">
+                        <label for="signature" class="mr-2">Firma de Transacción:</label>
+                        <input type="text" class="form-control" id="signature" placeholder="Ingresa tu firma" required>
+                    </div>
+                    <button class="btn-custom" id="perform-deposit">Confirmar Depósito</button>
+                </div>
+                
+                <!-- Sección de Alertas para el Estado del Depósito -->
+                <div id="alertMessage" class="alert" role="alert"></div>
+                
+                <!-- Enlaces Adicionales -->
+                <div class="additional-links">
+                    <a href="/login">Iniciar Sesión</a>
+                    <a href="/sign-up" style="margin-left: 10px;">Registrarse</a>
+                </div>
+            </div>
+            
+            <!-- Sección Derecha: Imagen y Texto Superpuesto (Puedes personalizar según tus necesidades) -->
+            <div class="image-section">
+                <!-- Agrega tu imagen y texto aquí -->
+            </div>
+        </div>
+    
+</body>
+</html>

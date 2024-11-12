@@ -1,0 +1,198 @@
+/* Estilos generales para el cuerpo y el html */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #000; /* Fondo negro */
+  color: #fff; /* Texto en blanco para mejor contraste */
+}
+
+/* Encabezado del chat */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 98%;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+  backdrop-filter: blur(10px); /* Efecto de desenfoque */
+  color: #fff;
+  font-weight: bold;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 4px 32px rgba(255, 255, 255, 0.4); /* Sombra blanca difuminada */
+  margin: 10px auto;
+  position: fixed; /* Fijo en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Por encima de otros elementos */
+}
+
+/* Espaciado para el contenido debajo del navbar fijo */
+body {
+  padding-top: 70px; /* Ajustar según la altura del navbar */
+}
+
+/* Botón de grabación */
+.recordButton {
+  background: linear-gradient(45deg, #007BFF, #00FF7F); /* Gradiente azul a verde */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4); /* Sombra blanca difuminada */
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.recordButton:hover {
+  background: linear-gradient(45deg, #0056b3, #00CC66); /* Gradiente más oscuro al pasar el cursor */
+  color: #000;
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.6); /* Sombra blanca más prominente */
+  transform: translateY(-2px);
+}
+
+/* Título de registro */
+.registerTitle {
+  text-align: center;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 2rem;
+  color: #00FF7F; /* Verde brillante */
+  margin-top: 20px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Sombra de texto blanca difuminada */
+}
+
+/* Formulario de registro */
+#register-form {
+  margin: 40px auto;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 600px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+  border-radius: 10px;
+  box-shadow: 0 4px 32px rgba(255, 255, 255, 0.4); /* Sombra blanca difuminada */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Etiquetas de formulario */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fff; /* Texto blanco */
+  font-size: 18px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Sombra de texto blanca difuminada */
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Borde semi-transparente */
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+  color: #fff; /* Texto en blanco */
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2); /* Sombra blanca difuminada */
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #00FF7F; /* Verde brillante */
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo más claro al enfocarse */
+  outline: none;
+  box-shadow: 0 0 10px #00FF7F; /* Sombra verde brillante */
+}
+
+/* Botón de envío */
+input[type="submit"] {
+  background: linear-gradient(45deg, #007BFF, #00FF7F); /* Gradiente azul a verde */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4); /* Sombra blanca difuminada */
+  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.2s ease;
+}
+
+input[type="submit"]:hover {
+  background: linear-gradient(45deg, #0056b3, #00CC66); /* Gradiente más oscuro al pasar el cursor */
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.6); /* Sombra blanca más prominente */
+  transform: translateY(-2px);
+}
+
+/* Barras de desplazamiento personalizadas */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*{
+  font-family: 'Mulish';
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #007BFF, #6610f2); /* Gradiente azul a púrpura */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #333; /* Fondo oscuro para la pista */
+  border-radius: 10px;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 600px) {
+  #register-form {
+    width: 100%;
+    box-shadow: 0 4px 32px rgba(255, 255, 255, 0.4); /* Sombra blanca difuminada */
+    border-radius: 0;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+  }
+
+  .registerTitle {
+    font-size: 1.8rem;
+  }
+
+  label,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="submit"] {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+
+  input[type="submit"] {
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.6); /* Sombra blanca más prominente en hover */
+  }
+
+  .chat-header {
+    padding: 10px 20px;
+    border-radius: 5px 5px 0 0;
+    margin: 0; /* Eliminado margen automático para mejor ajuste */
+  }
+
+  .recordButton {
+    padding: 8px 16px;
+    font-size: 1em;
+  }
+}

@@ -1,0 +1,235 @@
+/*
+************
+*************************
+03. back to top
+******************************************************* 
+*************************************************************** */
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
+
+
+.header-area{
+  padding: 20px 0;
+  width: 100%;
+  z-index: 99;
+  background-color: $bg;
+  position: fixed;
+}
+.header-logo {
+  max-width: 295px;
+  img{
+    @media #{$xl} {
+      width: auto;
+    }
+
+    @media #{$md} {
+      height: auto;
+    }
+  }
+
+@media #{$sm} {
+  width: 155px;
+  height: auto;
+  object-fit: cover;
+}
+
+}
+.menu-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-menu {
+  text-align: center;
+
+  ul{
+    .menu-has-child {
+      position: relative;
+      z-index: 5;
+      text-align: start;
+    }
+    li {
+      display: inline-block;
+      padding: 0 19px;
+      a {
+        display: block;
+        position: relative;
+        font-family: $pop;
+        font-size: 16px;
+        line-height: 22px;
+        color: var(--clr-body-heading);
+        padding: 25px 0;
+        color: #FFF;
+        font-weight: 700;
+        text-transform: capitalize;
+        @media #{$xl} {
+          font-size: 16px;
+        }
+        &::before{
+          content:"";
+          position: absolute;
+          bottom: 18px;
+          height: 2px;
+          background: #fff;
+          left: 0;
+          width: 0;
+          transition: 0.3s;
+
+        }
+        &:hover::before{
+          right: 0;
+          width: 100%;
+        }
+      }
+
+      &:is(.menu-has-child) > a::after {
+        display: inline-block;
+        font-family: "Font Awesome 5 Pro";
+        content: "\f0d7";
+        font-size: 14px;
+        font-weight: 700;
+        margin-left: 5px;
+      }
+      .submenu {
+        position: absolute;
+        left: 0;
+        top: 100%;
+        background: #fff;
+        width: 240px;
+        opacity: 0;
+        visibility: hidden;
+       transition: 0.3s;
+        box-shadow: 0 9px 19px rgba(0,0,0,0.1);
+        li {
+          display: block;
+          margin-right: 0;
+          position: relative;
+          z-index: 5;
+          a {
+            padding: 15px 25px ;
+            color: $heading;
+            transition: 0.3s;
+          }
+          & .submenu {
+            left: 100%;
+            top: 0;
+          }
+          &:hover > a {
+            background-color: $primary;
+            color: #fff;
+          }
+          &:not(:last-child) {
+            border-bottom: 1px solid #f2f2f2;
+          }
+        }
+      }
+      &:hover > {
+        .submenu {
+          opacity: 1;
+          visibility: visible;
+          
+        }
+  
+      }
+    }
+  }
+}
+.menu-buttons .main-menu{
+    margin-right: 120px;
+}
+.main-menu {
+  position: relative;
+  z-index: 5;
+
+}
+.dis-icon{
+    display: flex;
+    gap: 32px;
+    margin-right: 32px;
+    img{
+      display: inline-block;
+      height: 55px;
+      height: 55px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px #363658;
+      transition: 0.3s;
+      &:hover{
+        box-shadow: 0 0 0 0px #363658;
+      }
+      img{
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+  }
+
+
+.header-btn{
+    padding: 8px 11px;
+    border-radius: 15.874px !important;
+    border: 0.794px solid #453F3B !important;
+    background: #0F0E0C;
+    box-shadow: 0px 3.175px 15.478px 0px rgba(65, 48, 48, 0.25) !important;
+    cursor: pointer;
+    transition: 0.2s;
+    &:hover{
+        transform: scale(0.95);
+    }
+}
+.header-btn .btn-inner{
+    color: #000;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    padding: 12px 25px;
+    border-radius: 5.556px;
+    background: linear-gradient(90deg, #069AE6 0%, #1486A8 100%);
+}
+.dis-icon{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    text-transform: capitalize;
+}
+.menu-bar {
+  height: 40px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-left: 14px;
+}
+
+.navbar-sign {
+  cursor: pointer;
+  transition: 0.3s;
+  display: inline-block;
+}
+.navbar-sign span {
+  width: 28px;
+  height: 2px;
+  background-color: #fff;
+  border-radius: 50px;
+  display: block;
+  margin: 5px 0;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.navbar-sign span.menu-line-2 {
+  width: 25px;
+}
+.navbar-sign span.menu-line-3 {
+  width: 15px;
+}
+.navbar-sign:hover span {
+  background-color: $primary;
+}
+.navbar-sign:hover span.menu-line-2 {
+  width: 28px;
+}
+.navbar-sign:hover span.menu-line-3 {
+  width: 28px;
+}

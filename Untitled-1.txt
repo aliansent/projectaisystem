@@ -1,0 +1,7 @@
+/new_task {         
+    "text": "Tarea de hoy testing 123",         
+    "url_task": "task12",         
+    "time_online": 1.5,         
+    "points_won": 100,         
+    "url_redirect_task": "https://www.youtube.com/testingurl"         
+}

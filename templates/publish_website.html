@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Publica Tu Sitio Web</title>
+    <!-- Incluir la biblioteca Solana web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+
+    <script>
+        
+document.addEventListener('DOMContentLoaded', async () => {
+    // Constantes
+    const TOKEN_MINT_ADDRESS = '9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump';  // Dirección del mint del token MINI code
+    const TOKEN_DECIMALS = 6;  // Número correcto de decimales para tu token SPL
+    const TOKEN_MINT_PUBLIC_KEY = new solanaWeb3.PublicKey(TOKEN_MINT_ADDRESS);
+    const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+    const ASSOCIATED_TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"); // Usar el mismo ID que en el código que funciona
+    const BACKEND_GET_COST_URL = '/get_cost_publish';
+    const BACKEND_PUBLISH_ACTION_URL = '/publish_action_websitev1';
+    const HASHCHAT = '{{hashchatsession}}';
+
+    // Agregar el RPC_URL personalizado
+    const RPC_URL = '{{endpoint_sol}}'; // Reemplaza con tu propio URL de QuickNode
+
+    // Elementos del DOM
+    const connectWalletButton = document.getElementById('connect-wallet-button');
+    const codeHtmlTextarea = document.getElementById('code-html-textarea'); // Nuevo textarea
+
+    // Función de polling para confirmar la transacción con timeout
+    async function waitForConfirmation(connection, signature, timeout = 120000, interval = 5000) {
+        const startTime = Date.now();
+
+        return new Promise((resolve, reject) => {
+            const timer = setInterval(async () => {
+                try {
+                    const status = await connection.getSignatureStatus(signature);
+                    const confirmation = status && status.value && (status.value.confirmationStatus === 'confirmed' || status.value.confirmationStatus === 'finalized');
+
+                    if (confirmation) {
+                        clearInterval(timer);
+                        resolve(status.value);
+                    } else if (Date.now() - startTime > timeout) {
+                        clearInterval(timer);
+                        reject(new Error('Tiempo de espera para la confirmación de la transacción agotado.'));
+                    }
+                } catch (error) {
+                    clearInterval(timer);
+                    reject(error);
+                }
+            }, interval);
+        });
+    }
+
+    connectWalletButton.addEventListener('click', async () => {
+        if (window.solana && window.solana.isPhantom) {
+            try {
+                // Conectar a Phantom Wallet
+                const resp = await window.solana.connect();
+                const userPublicKey = resp.publicKey;
+                const walletAddress = userPublicKey.toString();
+
+                // Obtener el valor de code_html desde el textarea
+                const codeHtml = codeHtmlTextarea.value.trim();
+                if (!codeHtml) {
+                    alert('Por favor, ingresa el código HTML.');
+                    return;
+                }
+
+                // Enviar wallet, hashchat y code_html al backend para obtener el costo
+                const response = await fetch(BACKEND_GET_COST_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        wallet: walletAddress,
+                        hashchat: HASHCHAT,
+                        code_html: codeHtml
+                    })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    alert('Error al obtener el costo: ' + data.error);
+                    return;
+                }
+
+                const costAmount = data.cost_amount; // Suponiendo que es un número o string
+
+                // Convertir el monto al formato correcto
+                const tokenAmount = Math.round(parseFloat(costAmount) * Math.pow(10, TOKEN_DECIMALS));
+
+                // Establecer conexión con la red Solana utilizando el RPC personalizado
+                const connection = new solanaWeb3.Connection(RPC_URL, 'confirmed');
+
+                // Dirección de la wallet del proyecto
+                const PROJECT_WALLET_ADDRESS = '{{ wallet_project }}';
+                const PROJECT_PUBLIC_KEY = new solanaWeb3.PublicKey(PROJECT_WALLET_ADDRESS);
+
+                // Obtener o crear las cuentas de token asociadas
+                const userTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, userPublicKey);
+                const projectTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, PROJECT_PUBLIC_KEY);
+
+                const transaction = new solanaWeb3.Transaction();
+
+                // Verificar si la cuenta asociada del usuario existe y tiene suficiente balance
+                const userTokenAccountInfo = await connection.getAccountInfo(userTokenAccountAddress);
+
+                let sourceTokenAccount = null;
+
+                if (userTokenAccountInfo !== null) {
+                    // La ATA existe, verificar si tiene suficiente balance
+                    const tokenAccountBalanceResponse = await connection.getTokenAccountBalance(userTokenAccountAddress);
+                    const tokenAccountBalance = parseInt(tokenAccountBalanceResponse.value.amount);
+
+                    if (tokenAccountBalance >= tokenAmount) {
+                        sourceTokenAccount = userTokenAccountAddress;
+                    }
+                }
+
+                // Si no se encontró suficiente balance en el ATA, buscar en otras cuentas
+                if (!sourceTokenAccount) {
+                    // Obtener todas las cuentas de tokens del usuario para el mint específico
+                    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(userPublicKey, {
+                        mint: TOKEN_MINT_PUBLIC_KEY
+                    });
+
+                    // Buscar una cuenta con suficiente balance
+                    for (let accountInfo of tokenAccounts.value) {
+                        const balance = parseInt(accountInfo.account.data.parsed.info.tokenAmount.amount);
+                        if (balance >= tokenAmount) {
+                            sourceTokenAccount = accountInfo.pubkey;
+                            break;
+                        }
+                    }
+                }
+
+                if (!sourceTokenAccount) {
+                    alert('No tienes suficientes tokens para enviar.');
+                    return;
+                }
+
+                // Verificar si la cuenta asociada del proyecto existe
+                const projectTokenAccountInfo = await connection.getAccountInfo(projectTokenAccountAddress);
+                if (projectTokenAccountInfo === null) {
+                    // Crear la cuenta asociada de token del proyecto
+                    const createProjectATAIx = createAssociatedTokenAccountInstruction(
+                        userPublicKey, // Payer (el usuario paga por la creación)
+                        projectTokenAccountAddress, // ATA a crear
+                        PROJECT_PUBLIC_KEY, // Owner
+                        TOKEN_MINT_PUBLIC_KEY
+                    );
+                    transaction.add(createProjectATAIx);
+                }
+
+                // Crear instrucción de transferencia
+                const transferIx = createTransferCheckedInstruction(
+                    sourceTokenAccount,
+                    TOKEN_MINT_PUBLIC_KEY,
+                    projectTokenAccountAddress,
+                    userPublicKey,
+                    tokenAmount,
+                    TOKEN_DECIMALS
+                );
+
+                transaction.add(transferIx);
+
+                // Establecer fee payer y recent blockhash
+                transaction.feePayer = userPublicKey;
+                const latestBlockhash = await connection.getLatestBlockhash();
+                transaction.recentBlockhash = latestBlockhash.blockhash;
+
+                // Firmar y enviar la transacción
+                const signedTransaction = await window.solana.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+
+                // Esperar la confirmación de la transacción con un timeout de 2 minutos
+                try {
+                    await waitForConfirmation(connection, signature, 120000, 5000);
+                    alert('Pago exitoso! Firma de transacción: ' + signature);
+                } catch (confirmationError) {
+                    console.error('Error en la confirmación de la transacción:', confirmationError);
+                    alert('La transacción está pendiente o falló. Por favor, verifica la firma en Solana Explorer: ' + signature);
+                    return;
+                }
+
+                // Después del pago exitoso, enviar datos al backend para publicar el sitio web
+
+                const publishResponse = await fetch(BACKEND_PUBLISH_ACTION_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code_html: codeHtml,
+                        hashchat: HASHCHAT
+                    })
+                });
+
+                const publishData = await publishResponse.json();
+                if (publishData.error) {
+                    alert('Error al publicar el sitio web: ' + publishData.error);
+                } else {
+                    alert('¡Sitio web publicado exitosamente! Tu URL es: /website/' + publishData.url_web);
+                    // Opcionalmente, redirigir al usuario a su nuevo sitio web
+                    window.location.href = '/website/' + publishData.url_web;
+                }
+
+            } catch (err) {
+                console.error('Ocurrió un error:', err);
+                alert('Ocurrió un error: ' + err.message);
+            }
+        } else {
+            alert('Phantom Wallet no detectada. Por favor, instala la extensión Phantom Wallet.');
+        }
+    });
+
+
+    // Funciones para manejar tokens SPL sin la biblioteca spl-token
+    async function getAssociatedTokenAddress(mint, owner) {
+        return (await solanaWeb3.PublicKey.findProgramAddress(
+            [
+                owner.toBuffer(),
+                TOKEN_PROGRAM_ID.toBuffer(),
+                mint.toBuffer(),
+            ],
+            ASSOCIATED_TOKEN_PROGRAM_ID
+        ))[0];
+    }
+
+    function createAssociatedTokenAccountInstruction(payer, ata, owner, mint) {
+        const keys = [
+            { pubkey: payer, isSigner: true, isWritable: true },
+            { pubkey: ata, isSigner: false, isWritable: true },
+            { pubkey: owner, isSigner: false, isWritable: false },
+            { pubkey: mint, isSigner: false, isWritable: false },
+            { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+        ];
+        return new solanaWeb3.TransactionInstruction({
+            keys,
+            programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+            data: new Uint8Array(0),
+        });
+    }
+
+    function createTransferCheckedInstruction(source, mint, destination, owner, amount, decimals) {
+        const data = new Uint8Array(10);
+        const dataView = new DataView(data.buffer);
+
+        dataView.setUint8(0, 12); // Índice de instrucción para TransferChecked
+        dataView.setBigUint64(1, BigInt(amount), true); // Monto en little-endian
+        dataView.setUint8(9, decimals); // Decimales del token
+
+        const keys = [
+            { pubkey: source, isSigner: false, isWritable: true },
+            { pubkey: mint, isSigner: false, isWritable: false },
+            { pubkey: destination, isSigner: false, isWritable: true },
+            { pubkey: owner, isSigner: true, isWritable: false },
+        ];
+        return new solanaWeb3.TransactionInstruction({
+            keys,
+            programId: TOKEN_PROGRAM_ID,
+            data: data,
+        });
+    }
+});
+    </script>
+</head>
+<body>
+    <h1>Publica Tu Sitio Web</h1>
+    <form id="publish-form">
+        <label for="code-html-textarea">Código HTML:</label><br>
+        <textarea id="code-html-textarea" name="code_html" rows="10" cols="50" required></textarea><br><br>
+        <button type="button" id="connect-wallet-button">Publicar Sitio Web</button>
+    </form>
+</body>
+</html>

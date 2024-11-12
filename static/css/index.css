@@ -1,0 +1,135 @@
+* {
+  font-family: 'Mulish';
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: #000;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  max-width: 80%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0e0e0e;
+  padding: 40px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+}
+
+h1, p {
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+
+.input-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  font-size: 19px;
+  margin-bottom: 5px;
+  display: block;
+  color: #aaa;
+  text-align: center;
+}
+
+.wallet-address-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wallet-address-group input {
+  width: 60%;
+  padding: 10px;
+  background-color: #000;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.wallet-address-group button {
+  padding: 10px;
+  background-color: #3f8e9c;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.wallet-address-group button:hover {
+  background-color: #155ab6;
+}
+
+button#next-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #3f8e9c;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button#next-btn:hover {
+  background-color: #155ab6;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .wallet-address-group input {
+      width: 50%;
+  }
+
+  h1 {
+      font-size: 20px;
+  }
+
+  p {
+      font-size: 17px;
+  }
+
+  .input-group label, .input-group input, button, .wallet-address-group button {
+      font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wallet-address-group input {
+      width: 100%;
+  }
+
+  h1 {
+      font-size: 18px;
+  }
+
+  p {
+      font-size: 15px;
+  }
+
+  .input-group label, .input-group input, button, .wallet-address-group button {
+      font-size: 14px;
+  }
+}

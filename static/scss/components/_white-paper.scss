@@ -1,0 +1,361 @@
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
+.whitepaper > .container{
+    overflow-y: hidden;
+    overflow-x: scroll;
+
+
+}
+.whitepaper > .container::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* Track */
+.whitepaper > .container::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+/* Handle */
+.whitepaper > .container::-webkit-scrollbar-thumb {
+  background: #131313; 
+}
+
+/* Handle on hover */
+
+.whitepaper{
+    // display: none;
+    margin-top: 70px;
+    text-align: center;
+    @media #{$md} {
+        margin-top: 30px;
+    }
+    .whitepaper-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        min-width: 1460px;
+        // @media #{$lg} {
+        //     flex-wrap: wrap;
+        // }
+        .white-single-box {
+            border-radius: 20px;
+            border: 1px solid #453f3b24;
+            background: #0F0E0C;
+        }
+        .whitepaper-box{
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 240px;
+            .box-title{
+                color: #FFF;
+                // text-align: center;
+                font-family: Poppins;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 26.448px; /* 188.917% */
+                text-transform: lowercase;
+            }
+            &:nth-child(1){
+
+                .white-single-box{
+                    padding: 30px 30px 0;
+                    text-align: left;
+                }
+                p{
+                    color: #453F3B;
+                    font-family: Poppins;
+                    font-size: 12px;
+                    font-weight: 600;
+                    line-height: 15px;
+                    text-transform: lowercase;
+                    margin-bottom: 30px;
+                }
+            }
+            &:nth-child(2){
+                width: 400px;
+
+                .white-single-box{
+                    padding: 15px;
+                    padding-bottom: 0;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    &:nth-child(2){
+                        img{
+                            margin-top: 10px;
+                            margin-bottom: 24px;
+                        }
+                    }
+                }
+                .greed-btn{
+                    height: 28px;
+                    width: 78px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #1486A8;
+                    font-size: 12px;
+                    font-weight: 600;
+                    line-height: 10px;
+                    text-transform: lowercase;
+                    border-radius: 20px;
+                    border: 1px solid #453f3b3b;
+                    background: linear-gradient(180deg, #1D1B17 0%, #0F0E0C 100%);
+                    margin-top: 8px;
+                    margin-bottom: 20px;
+                }
+                
+            }
+            &:nth-child(4){
+                .white-single-box{
+                    padding: 22px 30px 30px;
+                    text-align: left;
+                    .token-price-title{
+                        color: #453F3B;
+                        font-size: 14px;
+                        font-weight: 600;
+                        line-height: 26.448px;
+                    }
+                    .token-price{
+                        font-size: 26px;
+                        font-weight: 600;
+                        line-height: 26.448px;
+                        text-transform: lowercase;
+                        margin: 6px 0 22px;
+                    }
+                }
+                .solana-matic{
+                    display: flex;
+                    .single-coin{
+                        display: flex;
+                        flex-direction: column;
+                        align-items: start;
+                        .coin-name{
+                            color: #453F3B;
+                            font-size: 12px;
+                            font-weight: 600;
+                            line-height: 12px;
+                            text-transform: lowercase;
+                            margin: 5px 0 7px;
+                        }
+                        .coin-price{
+                            font-size: 12px;
+                            font-weight: 600;
+                            line-height: 14px;
+                            text-transform: lowercase;
+                            margin-bottom: 17px;
+                        }
+                        .coin-percent{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: start;
+                            margin-top: -30px;
+                            margin-left: 15px;
+                            .c-name{
+                                color: #FFF;
+                                font-size: 11px;
+                                font-weight: 600;
+                                line-height: 14px;
+                                text-transform: lowercase;
+                            }
+                            .c-percent{
+                                color: #453F3B;
+                                font-size: 12px;
+                                font-weight: 600;
+                                line-height: 12px;
+                                text-transform: lowercase;
+                                margin-top: 3px;
+                            }
+                        }
+                    }
+                }
+                .deposit-btn{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #FFF;
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: 700;
+                    line-height: 20px;
+                    text-transform: lowercase;
+                    border-radius: 7px;
+                    background: linear-gradient(90deg, #069AE6 0%, #1486A8 100%);
+                    width: 183px;
+                    height: 35px;
+                    margin-top: 20px;
+                    transition: 0.2s;
+                    &:hover{
+                        transform: scale(0.95);
+                    }
+                }
+                .wallet-btn{
+                    border-radius: 30px;
+                    border: 1px solid #453f3b42;
+                    background: #0F0E0C;
+                    width: 240px;
+                    height: 52px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .wallet{
+                        color: #FFF;
+                        font-family: Poppins;
+                        font-size: 12px;
+                        font-weight: 600;
+                        line-height: 10px;
+                        text-transform: lowercase;
+                        width: 97px;
+                        height: 40px;
+                        border-radius: 30px;
+                        border: 1px solid #453f3b42;
+                        background: #0F0E0C;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-left: 9px;
+                        transition: 0.2s;
+                        &:hover{
+                            transform: scale(0.95);
+                        }
+                    }
+                    span{
+                        color: #453F3B;
+                        font-family: Poppins;
+                        font-size: 12px;
+                        font-weight: 500;
+                        line-height: 14px;
+                        text-transform: lowercase;
+                        margin-right: 32px;
+                    }
+                }
+            }
+            &:nth-child(5){
+                .news-box{
+                    padding: 27px 30px;
+                    text-align: left;
+                    background-image: url(../img/white/n-bg.png);
+                    background-size: auto 100%;
+                    border-radius: 20px;
+                    .news-date{
+                        color: #FFF;
+                        font-family: Poppins;
+                        font-size: 14px;
+                        font-weight: 600;
+                        line-height: 26.448px;
+                        text-transform: lowercase;
+                    }
+                    p{
+                        color: #FFF;
+                        font-family: Poppins;
+                        font-size: 16px;
+                        font-weight: 500;
+                        line-height: 20px;
+                        text-transform: lowercase;
+                        margin-top: 12px;
+                        margin-bottom: 15px;
+                    }
+                }
+                .ethereum-box{
+                    padding: 28px 30px;
+                    border-radius: 20px;
+                    border: 1px solid #453f3b41;
+                    background: #0F0E0C;
+                    background-image: url(../img/white/ethe-bg.png);
+                    background-repeat: no-repeat;
+                    background-position: 100% 100%;
+
+                    .ethereum-titles{
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        .name{
+                            color: #1486A8;
+                            font-family: Poppins;
+                            font-size: 14px;
+                            font-weight: 600;
+                            line-height: 26.448px;
+                            text-transform: lowercase;
+                        }
+                        .date{
+                            color: #453F3B;
+                            text-align: center;
+                            font-size: 9px;
+                            font-weight: 600;
+                            line-height: 10px;
+                            text-transform: lowercase;
+                            border-radius: 10px;
+                            border: 1px solid #453f3b54;
+                            background: #0F0E0C;
+                            width: 50px;
+                            height: 22px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    }
+                    .ethereum-desc{
+                        text-align: left;
+                        span{
+                            color: #FFF;
+                            font-family: Poppins;
+                            font-size: 35px;
+                            font-weight: 400;
+                            line-height: 26.448px;
+                            text-transform: lowercase;
+                            margin: 14px 0;
+                        }
+                        p{
+                            color: #453F3B;
+                            font-size: 12px;
+                            font-weight: 500;
+                            line-height: 14px;
+                            text-transform: lowercase;
+                            max-width: 120px;
+                        }
+                    }
+                }
+            }
+            // @media #{$lg} {
+            //     width: 48% !important;
+            //     max-width: 380px;
+            // }
+        }
+    }
+    #jupiter-terminal-instance{
+        height: 100%;
+        // #jupiter-terminal > div{
+        //     display: none;
+
+        // }
+        #jupiter-terminal .px-x.border-transparent > div > .py-5{
+            padding: 10px !important;
+        }
+        #jupiter-terminal .px-x.border-transparent > div > .py-5 .justify-between:nth-child(2){
+            display: none !important;
+        }
+        #jupiter-terminal .px-x.border-transparent > div > .py-5 .justify-between button img{
+            margin: 0 !important;
+        }
+        #jupiter-terminal form div > div:nth-child(2) button > div{
+            padding: 14px !important;
+        }
+        #jupiter-terminal div a > img{
+            margin: 0 !important;
+        }
+        #jupiter-terminal{
+            overflow: hidden;
+        }
+    }
+    // #integrated-terminal{
+    //     @media #{$md} {
+    //         width: 350px !important;
+    //     }
+    // }
+    #jupiter-terminal > div{
+        margin-bottom: 18px;
+    }
+}

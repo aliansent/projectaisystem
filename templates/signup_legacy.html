@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - MINI</title>
+
+    <!-- Import Google font similar to Helvetica Neue -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+    <style>
+/* General body styling */
+*{
+  font-family: 'Mulish';
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #000;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Container for the whole layout */
+.container {
+  
+    margin-top: 50px;
+    display: flex;
+    width: 85%;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+/* Left section (Sign Up form) */
+.sesion_signup {
+    background-color: #0e0e0e;
+    width: 50%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+h1, p {
+    color: white;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+p {
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 19px;
+    margin-bottom: 5px;
+    display: block;
+    color: #aaa;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    box-sizing: border-box;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3f8e9c;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #155ab6;
+}
+
+/* Google Sign-in button */
+.google-signin {
+    background-color: white;
+    color: #000;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.google-signin:hover {
+    background-color: #f1f1f1;
+}
+
+.google-signin img {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+/* Additional Links */
+.additional-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.additional-links a {
+    color: #3f8e9c;
+    text-decoration: none;
+    font-size: 19px;
+    transition: text-decoration 0.3s ease;
+}
+
+.additional-links a:hover {
+    text-decoration: underline;
+}
+
+/* Right section (Image section) */
+.image-section {
+    width: 50%;
+    background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.image-section .overlay-text {
+    font-size: 100px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+/* Global styles */
+* {
+    box-sizing: border-box;
+    font-size: 19px;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Tablets and smaller devices */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sesion_signup, .image-section {
+        width: 100%;
+    }
+
+    .sesion_signup {
+        padding: 20px;
+    }
+
+    .image-section {
+        display: none;
+    }
+
+    .image-section .overlay-text {
+        font-size: 50px; /* Reduce font size for overlay text */
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 17px;
+    }
+
+    .input-group label, .input-group input, button, .google-signin, .additional-links a {
+        font-size: 16px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    body {
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .image-section .overlay-text {
+        font-size: 30px; /* Further reduce font size for smaller screens */
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+
+    .input-group label, .input-group input, button, .google-signin, .additional-links a {
+        font-size: 14px;
+    }
+
+    .google-signin img {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Landscape phones */
+@media (max-width: 600px) and (orientation: landscape) {
+    .image-section .overlay-text {
+        font-size: 40px;
+    }
+
+    h1 {
+        font-size: 19px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+}
+
+/* High-resolution devices */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .image-section .overlay-text {
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up - MINI</title>
+    
+        <!-- Import Google font similar to Helvetica Neue -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+        <style>
+    /* General body styling */
+    *{
+      font-family: 'Mulish';
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', Arial, sans-serif;
+        background-color: #000;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        box-sizing: border-box;
+    }
+    
+    /* Container for the whole layout */
+    .container {
+        margin-top: 260px;
+        display: flex;
+        width: 80%;
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+    }
+    
+    /* Left section (Sign Up form) */
+    .sesion_signup {
+        background-color: #0e0e0e;
+        width: 50%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    
+    h1, p {
+        color: white;
+    }
+    
+    h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    p {
+        font-size: 19px;
+        line-height: 1.5;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .input-group {
+        margin-bottom: 20px;
+    }
+    
+    .input-group label {
+        font-size: 19px;
+        margin-bottom: 5px;
+        display: block;
+        color: #aaa;
+    }
+    
+    .input-group input {
+        width: 100%;
+        padding: 10px;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        box-sizing: border-box;
+    }
+    
+    /* Button styling */
+    button, .copy-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #3f8e9c;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
+    }
+    
+    button:hover, .copy-button:hover {
+        background-color: #155ab6;
+    }
+    
+    /* Google Sign-in button */
+    .google-signin {
+        background-color: white;
+        color: #000;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .google-signin:hover {
+        background-color: #f1f1f1;
+    }
+    
+    .google-signin img {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+    }
+    
+    /* Additional Links */
+    .additional-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    
+    .additional-links a {
+        color: #3f8e9c;
+        text-decoration: none;
+        font-size: 19px;
+        transition: text-decoration 0.3s ease;
+    }
+    
+    .additional-links a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Right section (Image section) */
+    .image-section {
+        width: 50%;
+        background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        box-sizing: border-box;
+    }
+    
+    .image-section .overlay-text {
+        font-size: 100px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    
+    ::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #333; /* Fondo de la pista de la scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3a8592, #155ab6); /* Gradiente en el "thumb" */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ab6, #3f8e9c); /* Gradiente al pasar el mouse */
+}
+    /* Tablets and smaller devices */
+    @media (max-width: 768px) {
+
+        .container {
+            margin-top: 50px;
+            flex-direction: column;
+        }
+    
+        .sesion_signup, .image-section {
+            width: 100%;
+        }
+    
+        .sesion_signup {
+            padding: 20px;
+        }
+    
+        .image-section {
+            display: none;
+        }
+    
+        .image-section .overlay-text {
+            font-size: 50px;
+        }
+    
+        h1, h2 {
+            font-size: 20px;
+        }
+    
+        p {
+            font-size: 17px;
+        }
+    
+        .input-group label, .input-group input, button, .google-signin, .additional-links a {
+            font-size: 16px;
+        }
+    }
+    
+    /* Mobile devices */
+    @media (max-width: 480px) {
+        body {
+            height: auto;
+            padding: 20px 0;
+        }
+    
+        .container {
+            box-shadow: none;
+            border-radius: 0;
+        }
+    
+        .image-section .overlay-text {
+            font-size: 30px;
+        }
+    
+        h1, h2 {
+            font-size: 18px;
+        }
+    
+        p {
+            font-size: 15px;
+        }
+    
+        .input-group label, .input-group input, button, .google-signin, .additional-links a {
+            font-size: 14px;
+        }
+    
+        .google-signin img {
+            width: 16px;
+            height: 16px;
+        }
+    }
+    
+    /* High-resolution devices */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .image-section .overlay-text {
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        }
+    }
+    
+        </style>
+    </head>
+    <body>
+    
+    <div class="container" >
+    
+        <!-- Left Section: Sign Up Form -->
+        <div class="sesion_signup">
+            <a href="/"> <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 100px;"></a>
+            <h1>Register Your Account</h1>
+            <p>MINI is a memecoin created by Dallas Review, inspired by his popular YouTube character MINI. Built on the Solana Network, it features integrated AI to enhance user experience and optimize transactions. MINI combines meme culture with advanced technology, creating a fun and engaging crypto community.</p>
+            
+            <!-- Step 1 -->
+            <div class="register-face-1 sesion_login">
+                <h2>Step 1: Your Solana Wallet</h2>
+                <div class="input-group">
+                    <label for="wallet">Solana Wallet</label>
+                    <input type="text" id="wallet" name="wallet" placeholder="Enter your Solana wallet address" required>
+                </div>
+                <div class="button-group">
+                    <button id="get-amount-button">Get Specific Amount to Send</button>
+                </div>
+            </div>
+    
+            <!-- Step 2 -->
+            <div class="register-face-2 sesion_login" style="display: none;">
+                <h2>Step 2: Confirm Your Deposit</h2>
+                <div class="input-group">
+                    <div id="confirmationMessage">Please send the specified amount to the following wallet:</div>
+                    <button class="copy-button" onclick='copyToClipboard(amountToCopy)'>Copy Amount</button>
+                </div>
+                <div class="input-group">
+                    <label>Send the amount to the following wallet:</label>
+                    <div id="targetWallet">YourTargetWalletAddressHere</div>
+                    <button class="copy-button" onclick="copyToClipboard(walletToCopy)">Copy Wallet</button>
+                </div>
+                <div class="button-group">
+                    <button id="confirm-deposit-button">I Confirm the Deposit</button>
+                </div>
+            </div>
+    
+            <!-- Step 3 -->
+            <div class="register-face-3 sesion_login" style="display: none;">
+                <h2>Final Step: Complete Your Registration</h2>
+                <div class="input-group">
+                    <label for="signature">Transaction Signature ID</label>
+                    <input type="text" id="signature" name="signature" placeholder="Paste your transaction signature ID here" required>
+                </div>
+                <div class="input-group">
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" name="reg-username" placeholder="Choose a username" required>
+                </div>
+                <div class="input-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" name="reg-password" placeholder="Create a password" required>
+                </div>
+                <div class="button-group">
+                    <button id="register-button">Register My Account</button>
+                </div>
+            </div>
+    
+            <!-- Google Sign-in button -->
+            <button class="google-signin">
+                <img src="https://p1.hiclipart.com/preview/209/923/667/google-logo-background-g-suite-google-pay-google-doodle-text-circle-line-area-png-clipart.jpg" alt="Google logo">
+                Sign up with Google
+            </button>
+    
+            <div class="additional-links">
+                <a href="/login">Already have an account? Login</a>
+                <a href="/deposit_tokens">Deposit more balance</a>
+            </div>
+        </div>
+    
+        <!-- Right Section: Image and Overlay Text -->
+        <div class="image-section">
+        </div>
+    </div>
+<!-- jQuery CDN (ensure version compatibility) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+
+<script>
+    let amountToCopy = ''; // Example amount, replace with dynamic value as needed
+    let walletToCopy = ''; // Replace with actual target wallet address
+
+    function copyToClipboard(value) {
+        const tempInput = document.createElement("input");
+        tempInput.value = value;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Copied to clipboard: " + value);
+    }
+
+        // Function to get a cookie value by name
+        function getCookie(name) {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
+            return null;
+        }
+
+        // Check if the pending_authentique cookie exists
+        window.onload = function () {
+            if (getCookie('pending_authentique')) {
+                document.querySelector('.register-face-1').style.display = 'none';
+                document.querySelector('.register-face-2').style.display = 'none';
+                document.querySelector('.register-face-3').style.display = 'block';
+            }
+        }
+        let hashTrackingSignup;
+        document.getElementById('get-amount-button').addEventListener('click', async (event) => {
+            event.preventDefault();
+            const wallet = document.getElementById('wallet').value;
+
+            try {
+                const response = await fetch('/get_specific_amount_for_authentication_v1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ wallet: wallet })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.success) {
+                        document.querySelector('.register-face-1').style.display = 'none';
+                        document.querySelector('.register-face-2').style.display = 'block';
+                        document.getElementById('confirmationMessage').innerHTML = `Send exactly ${data.amount} MINI-token or PAMBI 2.0. <br> This is the specific amount you must send. Make sure you copy it without missing a single decimal`;
+                        document.getElementById('targetWallet').innerHTML = data.targetWallet;
+
+                        amountToCopy = data.amount;
+                        walletToCopy = data.targetWallet;
+
+                        // Añadir valor a cookie con tiempo de expiración de 5 minutos
+                        let hashTrackingSignup = data.hash_tracking_signup; // Asegúrate de que esto está en data, no en response
+                        const expires = new Date(Date.now() + 5 * 60 * 1000).toUTCString();
+                        document.cookie = `pending_verify_hash=${hashTrackingSignup}; expires=${expires}; path=/`;
+                    }
+                } else {
+                    alert(data.error || "Failed to get amount.");
+                }
+            } catch (error) {
+                alert("An error occurred while trying to get the amount: " + error.message);
+            }
+        });
+
+        document.getElementById('confirm-deposit-button').addEventListener('click', () => {
+            document.querySelector('.register-face-2').style.display = 'none';
+            document.querySelector('.register-face-3').style.display = 'block';
+
+            // Setting the pending_authentique cookie for 5 minutes
+            document.cookie = `pending_authentique=true; path=/; max-age=300`;
+        });
+
+        document.getElementById('register-button').addEventListener('click', async (event) => {
+            event.preventDefault();
+            const wallet = document.getElementById('wallet').value;
+            const signature = document.getElementById('signature').value;
+            const regUsername = document.getElementById('reg-username').value;
+            const regPassword = document.getElementById('reg-password').value;
+
+            // Función para obtener cookies
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            const pendingVerifyHash = getCookie('pending_verify_hash');
+
+            try {
+                const response = await fetch('/confirm_and_signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ wallet: wallet, signature:signature, username: regUsername, password: regPassword, hash_pending_verify: pendingVerifyHash }) // change key name as hash_pending_verify
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.success) {
+                        document.cookie = `session_cookie=${data.sessionHash}; path=/; max-age=432000`;
+                        window.location.href = '/login';
+                    } else {
+                        alert(data.error);
+                    }
+                } else {
+                    alert(data.error || "Registration failed.");
+                }
+            } catch (error) {
+                alert("An error occurred while trying to register: " + error.message);
+            }
+        });
+
+        function toggleMenu() {
+            var element = document.querySelector('.navbar-toggler');
+            var navbar = document.querySelector('.navbar-collapse');
+
+            if (navbar.classList.contains('show')) {
+                navbar.classList.remove('show');
+                element.classList.remove('opened');
+                element.classList.add('closed');
+            } else {
+                navbar.classList.add('show');
+                element.classList.remove('closed');
+                element.classList.add('opened');
+            }
+        }
+    </script>
+</body>
+
+</html>

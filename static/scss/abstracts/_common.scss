@@ -1,0 +1,338 @@
+/*
+************
+*************************
+
+Template Name:  Cryptex
+Version: 1.0
+
+-----------------------------------------------------------------------------------
+
+CSS INDEX
+=================== 
+01. common
+02. header
+
+******************************************************* 
+*************************************************************** */
+
+/*
+************
+*************************
+01. common
+******************************************************* 
+*************************************************************** */
+@use "./variables" as *;
+@use "./mixins" as *;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $pop;
+  font-weight: 400;
+  font-style: normal;
+  color: $text;
+  font-size: 16px;
+  background: $bg;
+  scroll-behavior: smooth;
+
+}
+.img,
+img {
+  max-width: 100%;
+}
+a,
+.button,
+button {
+}
+a:focus,
+.button:focus {
+  text-decoration: none;
+  outline: none;
+}
+a:focus,
+a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+a,span, button{
+  display: inline-block;
+}
+
+a,
+button {
+  color: inherit;
+  outline: medium none;
+  text-decoration: none;
+}
+button:focus,
+input:focus,
+input:focus,
+textarea,
+textarea:focus {
+  outline: 0;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $pop;
+  color: $heading;
+  margin-top: 0px;
+  line-height: 1.2;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin: 0;
+}
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+  color: inherit;
+}
+h1 {
+  font-size: 60px;
+}
+h2 {
+  font-size: 48px;
+}
+h3 {
+  font-size: 38px;
+}
+h4 {
+  font-size: 28px;
+}
+h5 {
+  font-size: 20px;
+}
+h6 {
+  font-size: 16px;
+}
+ul {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+p {
+  font-family: $pop;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 28px;
+  color: $text;
+  margin: 0;
+}
+span,
+li,
+a {
+  display: inline-block;
+  margin: 0;
+}
+
+*::-moz-selection {
+  background-color: #00bfe9;
+  color: $white;
+  text-shadow: none;
+}
+::-moz-selection {
+  background-color: #00bfe9;
+  color: $white;
+  text-shadow: none;
+}
+::selection {
+  background-color:#00bfe9;
+  color: $white;
+  text-shadow: none;
+}
+
+/* <<<<<<<    Input Placeholder   >>>>>>>>> */
+
+
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  opacity: 0;
+}
+
+/* <<<<<<<    Common Classes   >>>>>>>>> */
+
+.w_img {
+  & img {
+    width: 100%;
+  }
+}
+
+/* <<<<<<<    Overlay   >>>>>>>>> */
+
+[data-overlay] {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  &::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    content: "";
+  }
+}
+
+/* <<<<<<<    Declaration   >>>>>>>>> */
+
+// :root {
+//   /**
+//     @color declaration
+//     */
+//   @each $color, $shades in $colors {
+//     @each $shade, $value in $shades {
+//       --clr-#{$color}-#{$shade}: #{$value};
+//     }
+//   }
+// }
+.bg-default {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.container,
+.row {
+  height: 100%;
+}
+
+
+/*template component css */
+.section-padding {
+  padding: 100px 0;
+  @media #{$md}{
+    padding: 80px 0;
+    }
+  @media #{$sm}{
+    padding: 70px 0;
+    }
+}
+.section-padding-top {
+  padding-top: 100px;
+  @media #{$md}{
+    padding-top: 80px;
+  }
+  @media #{$sm}{
+    padding-top: 70px;
+    }
+}
+.section-padding-bottom {
+  padding-bottom: 100px;
+  @media #{$md}{
+  padding-bottom: 80px;
+  }
+  @media #{$sm}{
+    padding-bottom: 70px;
+    }
+
+}
+.bg-common{
+  background-color: $primary;
+  background-image: url('../img/bg-shape.png');
+  border-radius: 15px;
+}
+.section-heading{
+  color: #000;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 90px;
+  text-decoration-line: underline;
+  text-transform: capitalize;
+  text-align: center;
+  @media #{$lg}{
+    font-size: 45px;
+    line-height: 70px;
+    margin: 10px 0;
+    }
+
+    @media #{$sm}{
+      font-size: 37px;
+      line-height: 50px;
+      margin: 20px 0;
+      text-align: center !important;
+      }
+}
+
+
+
+.color-heading{
+  background: linear-gradient(91deg, #26E5C6 28.05%, #07D5F5 71.97%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.prim-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border-radius: 100px;
+  border: 10px solid rgba(232, 232, 235, 0.50);
+  background: linear-gradient(150deg, #2BE8BF 9.27%, #07D5F5 88.14%);
+  width: 350px;
+  color: #000;
+  text-align: center;
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  gap: 7px;
+  padding: 12px 15px;
+  transition: 0.3s;
+  @media #{$md} {
+      width: 260px;
+      font-size: 17px;
+      padding: 8px 15px;
+  }
+  &:hover{
+      box-shadow: 0 4px 15px #098ea247;
+      color: initial;
+  }
+  img{
+      display: inline-block;
+      margin-top: 5px;
+  }
+}
+.section-heading{
+  text-align: center;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: capitalize;
+  text-decoration: none;
+  color: $white;
+  @media #{$md} {
+    font-size: 45px;
+  }
+}
+.reveal{
+  position: relative;
+  transform: translateY(150px);
+  opacity: 0;
+  transition: 1.5s all ease;
+}
+.reveal.active{
+  transform: translateY(0);
+  opacity: 1;
+}
