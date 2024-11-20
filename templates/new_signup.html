@@ -3,367 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - MINI</title>
-
-    <!-- Import Google font similar to Helvetica Neue -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+    <title>Sign Up - Trump-Verse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Import Google fonts similar to Helvetica Neue -->
     <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
-    <!DOCTYPE html>
-    <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <title>Registro con Solana</title>
-            <!-- Asegúrate de servir tu sitio sobre HTTPS -->
-            <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/lib/index.iife.min.js"></script>
-            <!-- Incluye buffer-layout si es necesario -->
-            <script src="https://cdn.jsdelivr.net/npm/buffer-layout@1.2.0/lib/index.js"></script>
-       <!-- Importar fuentes de Google similares a Helvetica Neue -->
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-    
-        <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
-        <style>
-            /* General body styling */
-            * {
-                font-family: 'Mulish', 'Roboto', Arial, sans-serif;
-                box-sizing: border-box;
-                font-size: 19px;
-            }
-    
-            body {
-                margin: 0;
-                padding: 0;
-                background-color: #000;
-                color: white;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                box-sizing: border-box;
-            }
-    
-            /* Container for the whole layout */
-            .container {
-                margin-top: 50px;
-                display: flex;
-                width: 85%;
-                box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
-                border-radius: 10px;
-            }
-    
-            /* Left section (Sign Up form) */
-            .sesion_signup {
-                background-color: #0e0e0e;
-                width: 50%;
-                padding: 40px;
-                display: flex;
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Mulish', sans-serif;
+            margin: 0;
+            background: linear-gradient(to bottom right, rgba(255, 0, 0, 0.6), rgba(0, 0, 255, 0.6)), url('{{ url_for('static', filename='images/background.jpg') }}') no-repeat center center/cover;
+            background-size: cover;
+            backdrop-filter: blur(10px);
+            overflow-x: hidden; /* Avoid horizontal scrolling */
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.25rem; /* 20px */
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            position: absolute;
+            left: 1.25rem; /* 20px */
+        }
+
+        .navbar .logo img {
+            width: 6.25rem; /* 100px */
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .navbar li {
+            margin: 0 0.9375rem; /* 15px */
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem; /* 16px */
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #f0f0f0;
+            text-shadow: 0 0 0.625rem rgba(255, 255, 255, 0.8); /* 10px */
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .hamburger div {
+            width: 1.5625rem; /* 25px */
+            height: 0.1875rem; /* 3px */
+            background: white;
+            margin: 0.25rem 0; /* 4px */
+            transition: all 0.3s ease;
+        }
+
+        /* Transform Hamburger to X */
+        .hamburger.active div:nth-child(1) {
+            transform: rotate(45deg) translate(0.3125rem, 0.3125rem); /* 5px */
+        }
+
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active div:nth-child(3) {
+            transform: rotate(-45deg) translate(0.3125rem, -0.3125rem); /* 5px */
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu .close-menu {
+            position: absolute;
+            top: 1.25rem; /* 20px */
+            right: 1.875rem; /* 30px */
+            font-size: 2.5rem; /* 40px */
+            color: white;
+            cursor: pointer;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .mobile-menu li {
+            margin: 1.25rem 0; /* 20px */
+        }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem; /* 24px */
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: #f0f0f0;
+            text-shadow: 0 0 0.625rem rgba(255, 255, 255, 0.8); /* 10px */
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 4.375rem; /* 70px */
+            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Left Section - Content and Articles */
+        .left-section {
+            width: 60%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 0.9375rem; /* 15px */
+            box-shadow: 0 0.5rem 2rem 0 rgba(255, 255, 255, 0.37); /* 8px 32px */
+            overflow-y: auto;
+            padding: 1.25rem; /* 20px */
+            box-sizing: border-box;
+            margin: 0.625rem; /* 10px */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-section .conten-info {
+            margin-bottom: 1.25rem; /* 20px */
+            color: #f0f0f0;
+        }
+
+        .left-section .conten-info h1 {
+            font-size: 1.5rem; /* 24px */
+            margin-bottom: 0.625rem; /* 10px */
+        }
+
+        .left-section .conten-info p {
+            font-size: 1rem; /* 16px */
+            line-height: 1.5;
+        }
+
+        .article {
+            display: flex;
+            flex-direction: row;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 0.9375rem; /* 15px */
+            box-shadow: 0 0.5rem 2rem 0 rgba(255, 255, 255, 0.37); /* 8px 32px */
+            padding: 0.9375rem; /* 15px */
+            width: 100%;
+            max-width: 50rem; /* 800px */
+            color: #f0f0f0;
+            margin-bottom: 1.25rem; /* 20px */
+        }
+
+        .article img {
+            width: 7.5rem; /* 120px */
+            height: auto;
+            border-radius: 0.625rem; /* 10px */
+            margin-right: 0.9375rem; /* 15px */
+            object-fit: cover;
+        }
+
+        .article-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .article-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            margin-bottom: 0.5rem; /* 8px */
+            color: #ffffff;
+        }
+
+        @media screen and (max-width: 768px) {
+            .article {
                 flex-direction: column;
-                justify-content: center;
-                box-sizing: border-box;
+                align-items: center;
                 text-align: center;
             }
-    
-            h1, p, h2 {
-                color: white;
-            }
-    
-            h1 {
-                font-size: 24px;
-                margin-bottom: 15px;
-                text-align: center;
-            }
-    
-            p {
-                font-size: 19px;
-                line-height: 1.5;
-                margin-bottom: 30px;
-                text-align: center;
-            }
-    
-            h2 {
-                font-size: 22px;
-                margin-bottom: 15px;
-            }
-    
-            .input-group {
-                margin-bottom: 20px;
-                text-align: left;
-            }
-    
-            .input-group label {
-                font-size: 19px;
-                margin-bottom: 5px;
-                display: block;
-                color: #aaa;
-            }
-    
-            .input-group input {
+
+            .article img {
+                margin: 0 0 0.9375rem 0; /* 0 0 15px 0 */
                 width: 100%;
-                padding: 10px;
-                background-color: #333;
-                border: none;
-                border-radius: 5px;
-                color: white;
-                box-sizing: border-box;
+                max-width: 18.75rem; /* 300px */
             }
-    
-            /* Button styling */
-            button, .copy-button {
-                width: 100%;
-                padding: 10px;
-                background-color: #3f8e9c;
-                border: none;
-                color: white;
-                font-size: 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin-bottom: 10px;
-                transition: background-color 0.3s ease;
+
+            .article-content {
+                text-align: center;
             }
-    
-            button:hover, .copy-button:hover {
-                background-color: #155ab6;
-            }
-    
-            /* Google Sign-in button */
-            .google-signin {
-                background-color: white;
-                color: #000;
-                font-size: 14px;
-                display: flex;
+        }
+
+        /* Right Section - Sign Up Form */
+        .sesion_signup {
+            width: 30%;
+            color: white;
+            text-align: center;
+            padding: 2.5rem; /* 40px */
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 1.25rem; /* 20px */
+            box-shadow: 0 0.5rem 2rem 0 rgba(255, 255, 255, 0.37); /* 8px 32px */
+            margin: 0.625rem; /* 10px */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sesion_signup h1 {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            margin-bottom: 0.625rem; /* 10px */
+        }
+
+        .sesion_signup p {
+            margin-bottom: 1.25rem; /* 20px */
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.9;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem; /* 20px */
+            text-align: left;
+            width: 100%;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.8;
+            margin-bottom: 0.3125rem; /* 5px */
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.625rem; /* 10px */
+            border: 0.0625rem solid white; /* 1px */
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 0.3125rem; /* 5px */
+            outline: none;
+            transition: background 0.3s;
+            font-size: 1rem; /* 16px */
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 0.75rem; /* 12px */
+            border: none;
+            border-radius: 1.5625rem; /* 25px */
+            background: transparent;
+            color: white;
+            font-size: 1rem; /* 16px */
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 0.625rem rgba(255, 255, 255, 0.2); /* 10px */
+            transition: all 0.3s ease;
+            margin-top: 0.625rem; /* 10px */
+        }
+
+        button:hover {
+            box-shadow: 0 0 1.25rem rgba(255, 255, 255, 0.4); /* 20px */
+        }
+
+        /* Additional Links */
+        .additional-links {
+            margin-top: 1.25rem; /* 20px */
+        }
+
+        .additional-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.625rem; /* 10px */
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .additional-links a:hover {
+            opacity: 1;
+        }
+
+        /* Info Mobile */
+        .info-mobile {
+            display: none;
+            margin-bottom: 1.25rem; /* 20px */
+            text-align: left;
+            width: 100%;
+            border-top: 0.125rem solid #f0f0f0; /* 2px */
+            padding-top: 1.25rem; /* 20px */
+        }
+
+        .info-mobile h1 {
+            font-size: 1.375rem; /* 22px */
+            margin-bottom: 0.625rem; /* 10px */
+        }
+
+        .info-mobile p {
+            font-size: 1.1875rem; /* 19px */
+            line-height: 1.5;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 0.625rem; /* 10px */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #333; /* Scrollbar track background */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3a8592, #155ab6); /* Thumb gradient */
+            border-radius: 0.3125rem; /* 5px */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #155ab6, #3f8e9c); /* Thumb hover gradient */
+        }
+
+        /* Media Queries for Responsive Design */
+
+        /* Tablets and smaller devices */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+                padding-top: 4.375rem; /* 70px */
                 align-items: center;
                 justify-content: center;
-                padding: 10px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin-bottom: 20px;
-                transition: background-color 0.3s ease, color 0.3s ease;
             }
-    
-            .google-signin:hover {
-                background-color: #f1f1f1;
+
+            .sesion_signup, .left-section {
+                width: 90%;
             }
-    
-            .google-signin img {
-                width: 18px;
-                height: 18px;
-                margin-right: 8px;
+
+            .sesion_signup {
+                padding: 1.25rem; /* 20px */
+                margin: 1.25rem 0; /* 20px 0 */
             }
-    
-            /* Additional Links */
-            .additional-links {
+
+            /* Hide the left-section on mobile */
+            .left-section {
+                display: none;
+            }
+
+            .navbar ul {
+                display: none;
+            }
+
+            .hamburger {
                 display: flex;
-                justify-content: space-between;
-                margin-top: 10px;
             }
-    
+
+            .mobile-menu {
+                background: rgba(0,0,0,0.95);
+            }
+
+            .sesion_signup p {
+                font-size: 1rem; /* 16px */
+            }
+
+            .input-group label,
+            .input-group input,
+            button,
             .additional-links a {
-                color: #3f8e9c;
-                text-decoration: none;
-                font-size: 19px;
-                transition: text-decoration 0.3s ease;
+                font-size: 1rem; /* 16px */
             }
-    
-            .additional-links a:hover {
-                text-decoration: underline;
+
+            .info-mobile {
+                display: block;
             }
-    
-            /* Right section (Image section) */
-            .image-section {
-                width: 50%;
-                background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: relative;
-                box-sizing: border-box;
+        }
+
+        @media (max-width: 480px) {
+            .sesion_signup {
+                width: 100%;
+                padding: 1.875rem 1.25rem; /* 30px 20px */
+                border-radius: 0;
+                box-shadow: none;
+                overflow-y: auto;
             }
-    
+
+            button {
+                font-size: 1.125rem; /* 18px */
+                padding: 0.875rem; /* 14px */
+            }
+
+            .additional-links a {
+                font-size: 1rem; /* 16px */
+            }
+
+            .info-mobile h1 {
+                font-size: 1rem; /* 16px */
+            }
+
+            .info-mobile p {
+                font-size: 0.8125rem; /* 13px */
+            }
+        }
+
+        /* Landscape phones */
+        @media (max-width: 600px) and (orientation: landscape) {
             .image-section .overlay-text {
-                font-size: 100px;
-                font-weight: bold;
-                color: white;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                font-size: 2.5rem; /* 40px */
             }
-    
-            /* Scrollbar styling */
-            ::-webkit-scrollbar {
-                width: 10px;
+
+            h1 {
+                font-size: 1.1875rem; /* 19px */
             }
-    
-            ::-webkit-scrollbar-track {
-                background: #333; /* Fondo de la pista de la scrollbar */
+
+            p {
+                font-size: 1rem; /* 16px */
             }
-    
-            ::-webkit-scrollbar-thumb {
-                background: linear-gradient(180deg, #3a8592, #155ab6); /* Gradiente en el "thumb" */
-                border-radius: 5px;
+        }
+
+        /* High-resolution devices */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .image-section .overlay-text {
+                text-shadow: 0.1875rem 0.1875rem 0.375rem rgba(0,0,0,0.8); /* 3px 3px 6px */
             }
-    
-            ::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(180deg, #155ab6, #3f8e9c); /* Gradiente al pasar el mouse */
+        }
+
+        /* Hide image-section on small devices */
+        @media (max-width: 768px) {
+            .image-section {
+                display: none;
             }
-    
-            /* Media Queries for Responsive Design */
-    
-            /* Tablets and smaller devices */
-            @media (max-width: 768px) {
-                .container {
-                    margin-top: 50px;
-                    flex-direction: column;
-                    width: 90%;
-                }
-    
-                .sesion_signup, .image-section {
-                    width: 100%;
-                }
-    
-                .sesion_signup {
-                    padding: 20px;
-                }
-    
-                .image-section {
-                    display: none;
-                }
-    
-                .image-section .overlay-text {
-                    font-size: 50px;
-                }
-    
-                h1, h2 {
-                    font-size: 20px;
-                }
-    
-                p {
-                    font-size: 17px;
-                }
-    
-                .input-group label, .input-group input, button, .google-signin, .additional-links a {
-                    font-size: 16px;
-                }
-            }
-    
-            /* Mobile devices */
-            @media (max-width: 480px) {
-                body {
-                    height: auto;
-                    padding: 20px 0;
-                }
-    
-                .container {
-                    box-shadow: none;
-                    border-radius: 0;
-                    width: 100%;
-                }
-    
-                .image-section .overlay-text {
-                    font-size: 30px;
-                }
-    
-                h1, h2 {
-                    font-size: 18px;
-                }
-    
-                p {
-                    font-size: 15px;
-                }
-    
-                .input-group label, .input-group input, button, .google-signin, .additional-links a {
-                    font-size: 14px;
-                }
-    
-                .google-signin img {
-                    width: 16px;
-                    height: 16px;
-                }
-            }
-    
-            /* Landscape phones */
-            @media (max-width: 600px) and (orientation: landscape) {
-                .image-section .overlay-text {
-                    font-size: 40px;
-                }
-    
-                h1 {
-                    font-size: 19px;
-                }
-    
-                p {
-                    font-size: 16px;
-                }
-            }
-    
-            /* High-resolution devices */
-            @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-                .image-section .overlay-text {
-                    text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <!-- Left Section: Sign Up Form -->
-            <div class="sesion_signup">
-                <a href="/"> 
-                    <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 100px;" alt="Logo">
-                </a>
-                <h1>Register Your Account</h1>
-                <p>MINI is a memecoin created by Dalas Review, inspired by his popular YouTube character MINI. Built on the Solana Network, it features integrated AI to enhance user experience and optimize transactions. MINI combines meme culture with advanced technology, creating a fun and engaging crypto community.</p>
-                
-                <!-- Formulario de Registro con Username y Password -->
-                <form id="registration-form">
-                    <div class="input-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                    </div>
-    
-                    <!-- Step 1: Connect Wallet -->
-                    <div class="register-face-1 sesion_login">
-                        <h2>Step 1: Connect Your Solana Wallet</h2>
-                        <div class="button-group">
-                            <button type="button" id="connect-wallet-button">Connect Wallet</button>
-                        </div>
-                    </div>
-    
-                    <!-- Step 2: Confirm Transaction -->
-                    <div class="register-face-2 sesion_login" style="display: none;">
-                        <h2>Step 2: Confirm Transaction</h2>
-                        <p>Please approve the transaction in your wallet to complete the registration.</p>
-                    </div>
-    
-                    <!-- Botón de Registro -->
-                    <button type="submit" id="register-button">Register</button>
-                </form>
-    
-                <!-- Google Sign-in button -->
-                <button class="google-signin">
-                    <img src="https://p1.hiclipart.com/preview/209/923/667/google-logo-background-g-suite-google-pay-google-doodle-text-circle-line-area-png-clipart.jpg" alt="Google logo">
-                    Sign up with Google
-                </button>
-    
-                <div class="additional-links">
-                    <a href="/login">Already have an account? Login</a>
-                    <a href="/deposit_tokens">Deposit more balance</a>
+        }
+
+        /* Right Section - Image */
+        .image-section {
+            width: 50%;
+            background: url("{{ url_for('static', filename='images/ia_image.jpg', cache_timeout=0) }}") no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-sizing: border-box;
+            border-radius: 0.9375rem; /* 15px */
+            box-shadow: 0 0.5rem 2rem 0 rgba(255, 255, 255, 0.37); /* 8px 32px */
+            margin: 1.25rem; /* 20px */
+        }
+
+        .image-section .overlay-text {
+            font-size: 6.25rem; /* 100px */
+            font-weight: bold;
+            color: white;
+            text-shadow: 0.125rem 0.125rem 0.25rem rgba(0,0,0,0.7); /* 2px 2px 4px */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Trump-V -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/icon.png', cache_timeout=0) }}" style="width: 3.75rem; border-radius: 50%; padding: 0.9375rem;" alt="Trump-Verse Logo"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="/sign-up">Sign-up</a></li>
+            <li><a href="#">Tokenomics</a></li>
+            <li><a href="#">RoadMap</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <span class="close-menu" id="close-menu">&times;</span>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="/sign-up">Sign-up</a></li>
+            <li><a href="#">Tokenomics</a></li>
+            <li><a href="#">RoadMap</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+
+        <!-- Left Section: Content and Summarized Articles -->
+        <div class="left-section">
+            <!-- First Article: Updated Content -->
+            <div class="article">
+                <div class="article-content">
+                    <h3 class="article-title">Welcome Back to Trump-Verse!</h3>
+                    <p>Trump-Verse empowers users to create web articles and blogs without any programming skills. Our AI technology allows you to generate music and websites centered around Donald Trump, enabling you to publish AI-generated websites on the internet seamlessly. Additionally, you can receive donations in TRUMP-V tokens without any commission from supporters who appreciate the websites and blogs you create using our AI. This ensures that creators retain the full value of their contributions while fostering a vibrant community of Trump enthusiasts.</p>
                 </div>
             </div>
-    
-            <!-- Right Section: Image and Overlay Text -->
-            <div class="image-section">
-                <!-- Contenido adicional si es necesario -->
+
+            <!-- Second Article: Example -->
+            <div class="article">
+                <div class="article-content">
+                    <h3 class="article-title">Exciting Airdrop Opportunity with Trump-Verse's New Telegram Game</h3>
+                    <p>Trump-Verse is thrilled to announce the launch of our latest Telegram game, inspired by the popular Hamster-Kombat. This engaging game allows users to effortlessly earn points by simply scrolling through their Telegram feed, similar to Hamster Kombat's interface. Players can spin the "uncle Sam" spinner to accumulate points, which can later be redeemed in our upcoming airdrop. The airdrop is structured into four epochs, with the initial phases offering the highest point rewards. Participants can also boost their points by completing simple tasks, such as following our official social media channels. Don’t miss out on this limited-time opportunity—start playing and earning points today to maximize your rewards in the Trump-Verse airdrop!</p>
+                </div>
             </div>
         </div>
-    
+
+        <!-- Right Section: Sign Up Form -->
+        <div class="sesion_signup">
+            <a href="/"><img src="{{ url_for('static', filename='images/icon.png', cache_timeout=0) }}" style="width: 10rem; border-radius: 50%; padding: 0.9375rem;" alt="Trump-Verse Logo"></a>
+            <div class="info-mobile">
+            </div>
+            <!-- Registration Form with Username and Password -->
+            <form id="registration-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <!-- Step 1: Connect Wallet -->
+                <div class="register-face-1 sesion_login">
+                    <h2>Step 1: Connect Your Solana Wallet</h2>
+                    <div class="button-group">
+                        <button type="button" id="connect-wallet-button">Connect Wallet</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Confirm Transaction -->
+                <div class="register-face-2 sesion_login" style="display: none;">
+                    <h2>Step 2: Confirm Transaction</h2>
+                    <p>Please click on the register button and approve the transaction in your wallet.</p>
+                </div>
+
+                <!-- Register Button -->
+                <button type="submit" id="register-button">Register</button>
+            </form>
+
+            <div class="additional-links">
+                <a href="/login">Already have an account? Login</a>
+                <a href="/deposit_tokens">Get Airdrop</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
         <!-- Librerías de Solana -->
         <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/lib/index.iife.min.js"></script>
@@ -638,7 +911,7 @@
                         }
         
                         if (!sourceTokenAccount) {
-                            alert("You don't have enough tokens to send. You need to have at least 5 USD equivalent in MINI tokens in your wallet");
+                            alert("You don't have enough tokens to send. You need to have at least 5 USD equivalent in Trump-V tokens in your wallet");
                             window.open('https://raydium.io/swap/?inputMint=9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump&outputMint=sol', '_blank');
                             return;
                         }

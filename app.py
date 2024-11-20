@@ -7,7 +7,7 @@ import random
 import string
 import hashlib
 import threading
-from datetime import datetime, timedelta  # Modificado aquí start_bot
+from datetime import datetime, timedelta  # Modificado aquí start_bot MINI 
 from pathlib import Path
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -99,8 +99,8 @@ conection_webhosting = DatabaseConnection(
     database="MINI_platform"
 )
 
-hosting_connect_db = BuildDBWebs(conection_webhosting)
-hosting_connect_db.create_web_articles_table()
+#hosting_connect_db = BuildDBWebs(conection_webhosting)
+#hosting_connect_db.create_web_articles_table()
 
 db_mini_platform = ConnectDB(
     user_db=DB_USER,
@@ -273,7 +273,7 @@ def ensure_airdrop_table():
         print(f"Error creating airdrop_account_user table: {error}")
 
 # Ensure the table exists on startup
-ensure_airdrop_table()
+#ensure_airdrop_table()
 
 # Telegram bot handlers and functions
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1166,8 +1166,8 @@ token_addresses = [MINI_token_address, PAMBI2_address]
 #data_thread.start()
 
 # Initialize the database connection for web hosting
-hosting_connect_db = BuildDBWebs(conection_webhosting)
-hosting_connect_db.create_web_articles_table()
+#hosting_connect_db = BuildDBWebs(conection_webhosting)
+#hosting_connect_db.create_web_articles_table()
 
 # Route to serve static files from the hosting path
 @app.route('/hosting/<url_web>/<path:filename>')
@@ -1231,11 +1231,11 @@ def serve_website(url_web):
 
             </style>
             <p style="color: white;">
-                This website was created with MINI AI. If you want to earn money and donations by creating websites without knowing how to code, 
+                This website was created with TRUMP-VERSE AI. If you want to earn money and donations by creating websites without knowing how to code, 
                 <a style="color:black;" href="https://minimeme.io/sign-up" target="_blank">click here</a>.
             </p>
             <button id="donate-button">Donate to the Creator</button>
-            <input type="number" id="donation-amount" placeholder="Amount in MINI">
+            <input type="number" id="donation-amount" placeholder="Amount in TRUMP-V">
             <!-- You can add more elements here -->
         </header>
 
@@ -2593,4 +2593,4 @@ def solana_proxy():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Por defecto, usa el puerto 5000 si no se encuentra la variable de entorno
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)

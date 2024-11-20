@@ -3,77 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MINI</title>
+    <title>Login - Trump-Verse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <!-- Import Google font similar to Helvetica Neue -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
     <style>
         /* Global Styles */
         body {
             font-family: 'Mulish', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
             margin: 0;
             background: linear-gradient(to bottom right, rgba(255, 0, 0, 0.6), rgba(0, 0, 255, 0.6)), url('path-to-your-background-image.jpg');
             background-size: cover;
             backdrop-filter: blur(10px);
-            overflow: hidden;
+            overflow-x: hidden; /* Avoid horizontal scrolling */
         }
-    
-        .container {
+
+        /* Navbar Styles */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 90%;
-            max-width: 800px;
-            height: auto;
-            padding: 40px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(15px);
+            padding: 20px 20px;
+            z-index: 1000;
         }
-    
-        /* Left Section - Login Form */
-        .sesion_login {
-            width: 100%;
-            max-width: 400px;
+
+        .navbar .logo {
+            position: absolute;
+            left: 20px;
+        }
+
+        .navbar .logo img {
+            width: 100px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .navbar li {
+            margin: 0 15px;
+        }
+
+        .navbar a {
+            text-decoration: none;
             color: white;
+            font-size: 16px;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #f0f0f0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Transform Hamburger to X */
+        .hamburger.active div:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active div:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             text-align: center;
         }
-    
-        .sesion_login h1 {
+
+        .mobile-menu li {
+            margin: 20px 0;
+        }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: #f0f0f0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 70px;
+            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Left Section - Content and Articles */
+        .left-section {
+            width: 60%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-section .conten-info {
+            margin-bottom: 20px;
+            color: #f0f0f0;
+        }
+
+        .left-section .conten-info h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .left-section .conten-info p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .article {
+            display: flex;
+            flex-direction: row;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+            padding: 15px;
+            width: 100%;
+            max-width: 800px;
+            color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .article img {
+            width: 120px;
+            height: auto;
+            border-radius: 10px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .article-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .article-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        @media screen and (max-width: 768px) {
+            .article {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .article img {
+                margin: 0 0 15px 0;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .article-content {
+                text-align: center;
+            }
+        }
+
+        /* Right Section - Login Form  uncle Sam*/
+        .sesion_login {
+            width: 30%;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+            margin: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sesion_login h2 {
             font-weight: 700;
             margin-bottom: 10px;
         }
-    
+
         .sesion_login p {
             margin-bottom: 20px;
             font-size: 14px;
-            opacity: 0.8;
+            opacity: 0.9;
         }
-    
+
         .input-group {
             margin-bottom: 20px;
             text-align: left;
+            width: 100%;
         }
-    
+
         .input-group label {
             display: block;
             font-size: 14px;
             opacity: 0.8;
             margin-bottom: 5px;
         }
-    
+
         .input-group input {
             width: 100%;
             padding: 10px;
@@ -84,11 +301,11 @@
             outline: none;
             transition: background 0.3s;
         }
-    
+
         .input-group input:focus {
             background: rgba(255, 255, 255, 0.3);
         }
-    
+
         button[type="submit"] {
             width: 100%;
             padding: 12px;
@@ -101,16 +318,17 @@
             cursor: pointer;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
+            margin-top: 10px;
         }
-    
+
         button[type="submit"]:hover {
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
         }
-    
+
         .additional-links {
             margin-top: 20px;
         }
-    
+
         .additional-links a {
             color: white;
             text-decoration: none;
@@ -119,66 +337,220 @@
             opacity: 0.8;
             transition: opacity 0.3s;
         }
-    
+
         .additional-links a:hover {
             opacity: 1;
         }
-    
-        /* Right Section - Image Overlay */
-        .image-section {
-            display: none; /* Hide right image section for simplicity, make visible if needed */
+
+        /* Info Mobile */
+        .info-mobile {
+            display: none;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
         }
-    
-        /* Mobile Responsiveness */
+
+        .info-mobile h1 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .info-mobile p {
+            font-size: 19px;
+        }
+
+        /* Responsive Styles */
         @media screen and (max-width: 768px) {
             .container {
                 flex-direction: column;
-                padding: 20px;
+                align-items: center;
+                justify-content: center;
+                padding-top: 70px;
             }
-            
-            .image-section {
-                display: none; /* Hide image section in mobile view */
+
+            .left-section {
+                width: 90%;
+            }
+
+            .sesion_login {
+                width: 90%;
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .navbar ul {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-menu {
+                background: rgba(0,0,0,0.95);
+            }
+
+            .sesion_login p {
+                font-size: 16px;
+            }
+
+            .input-group label,
+            .input-group input,
+            button[type="submit"] {
+                font-size: 16px;
+            }
+
+            .info-mobile {
+                display: block;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .sesion_login {
+                width: 100%;
+                height: auto;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 30px 20px;
+                overflow-y: auto;
+            }
+
+            button[type="submit"] {
+                font-size: 18px;
+                padding: 14px;
+            }
+
+            .additional-links a {
+                font-size: 16px;
+            }
+
+            .info-mobile h1 {
+                font-size: 16px;
+            }
+
+            .info-mobile p {
+                font-size: 13px;
             }
         }
     </style>
-    </head>
+</head>
 <body>
 
-<div class="container">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/icon.png', cache_timeout=0) }}" style="width: 60px; border-radius: 100%; padding: 15px;" alt="Trump-Verse Logo"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="/sign-up">Sign-up</a></li>
+            <li><a href="#">Tokenomics</a></li>
+            <li><a href="#">RoadMap</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
 
-    <!-- Left Section: Login Form -->
-    <div class="sesion_login">
-       <a href="/"> <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 100px;"></a>
-        <h1>Welcome back to Trump Verse!</h1>
-        <p>There wrie descripcion.</p>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <span class="close-menu" id="close-menu">&times;</span>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="/sign-up">Sign-up</a></li>
+            <li><a href="#">Tokenomics</a></li>
+            <li><a href="#">RoadMap</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+
+        <!-- Left Section: Content and Summarized Articles -->
+        <div class="left-section">
+            
+
+            <!-- First Article: Updated Content -->
+            <div class="article">
+                
+                <div class="article-content">
+                    <h3 class="article-title">Welcome Back to Trump-Verse!</h3>
+                    <p>Trump-Verse empowers users to create web articles and blogs without any programming skills. Our AI technology allows you to generate music and websites centered around Donald Trump, enabling you to publish AI-generated websites on the internet seamlessly. Additionally, you can receive donations in TRUMP-V tokens without any commission from supporters who appreciate the websites and blogs you create using our AI. This ensures that creators retain the full value of their contributions while fostering a vibrant community of Trump enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- Second Article: Example -->
+            <div class="article">
+                
+                <div class="article-content">
+                    <h3 class="article-title">Exciting Airdrop Opportunity with Trump-Verse's New Telegram Game</h3>
+                    <p>Trump-Verse is thrilled to announce the launch of our latest Telegram game, inspired by the popular Hamster-Kombat. This engaging game allows users to effortlessly earn points by simply scrolling through their Telegram feed, similar to Hamster Kombat 's interface. Players can spin the "uncle Sam" spinner to accumulate points, which can later be redeemed in our upcoming airdrop. The airdrop is structured into four epochs, with the initial phases offering the highest point rewards. Participants can also boost their points by completing simple tasks, such as following our official social media channels. Don’t miss out on this limited-time opportunity—start playing and earning points today to maximize your rewards in the Trump-Verse airdrop!</p>
+                </div>
+            </div>
+
+        </div>
         
-        <div class="input-group">
-            <label for="text" >Username</label>
-            <input type="text" id="username" placeholder="Enter your email address" required>
+        <!-- Right Section: Login Form -->
+        <div class="sesion_login">
+
+            <a href="/"><img src="{{ url_for('static', filename='images/icon.png', cache_timeout=0) }}" style="width: 160px; border-radius: 100%; padding: 15px;" alt="Trump-Verse Logo"></a>
+            <h2>Log In</h2>
+            
+            <!-- Info Mobile -->
+            
+            <div class="info-mobile" style="border-top: #f0f0f0 solid 2px; margin-top: 20px;">
+                <h1>Welcome back to Trump-Verse!</h1>
+                <p>Trump-Verse allows users to create web articles and blogs without any programming knowledge. You can include various types of media such as videos and audios to generate exclusive content about Donald Trump, as well as receive donations in TRUMP-V tokens.</p>
+            </div>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your email address" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" id="send-list-button">Log In</button>
+
+            <div class="additional-links">
+                <a href="/telegram_airdrop">Get Airdrop</a>
+                <a href="/sign-up">Sign Up</a>
+            </div>
+
         </div>
 
-        <div class="input-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" required>
-        </div>
-
-        <button type="submit" id="send-list-button">Sign In</button>
-
-
-        <div class="additional-links">
-            <a href="/telegram_airdrop">Get Airdrop</a>
-            <a href="/sign-up">Sign Up</a>
-        </div>
     </div>
+    
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
 
-    <!-- Right Section: Image and Overlay Text -->
-    <div class="image-section">
-        <div class="overlay-text"></div>
-    </div>
-</div>
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    </script>
 
 </body>
 </html>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
@@ -193,7 +565,7 @@
     const sendListButton = document.getElementById('send-list-button');
     sendListButton.addEventListener('click', async (event) => {
     event.preventDefault();
-    const typechat = "MINI";
+    const typechat = "Trump-Verse";
 
     // Check if typechat is empty PAMBI 2.0
     if (!typechat) {
@@ -214,7 +586,7 @@
         const response = JSON.parse(xhr.responseText);
         if (xhr.readyState === 4 && xhr.status === 200) {
             if (response.error == "cuote_expired_month"){
-                alert("You do not have enough credits, please recharge more MINI tokens in your account");
+                alert("You do not have enough credits, please recharge more Trump-Verse tokens in your account");
             } else if (response.success == true) {
                 // Redirigir al chat usando el username proporcionado por el backend
                 var url = 'chat/' + response.hashchat + "/" + response.username + "/" + response.hash_invite;

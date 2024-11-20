@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MINI AI</title>
+    <title>Uncensored AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Existing Fonts and Styles -->
+    <!-- Fuentes y Estilos Existentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css', cache_timeout=0) }}">  
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
-    <!-- Removed integrity attributes -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
     
-    <!-- Existing JS Libraries -->
+    <!-- Iconos para el Navbar -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.svg') }}" type="image/x-icon">
+
+    <!-- Librerías JS Existentes -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -21,1008 +21,429 @@
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
 
-    <script>
-    
-        document.addEventListener('DOMContentLoaded', async () => {
-        // Constants
-        const TOKEN_MINT_ADDRESS = '9nmu7zbf1kKNb52cAohAzyjD3yRdG8Pszw15Umsupump';  // Token MINI mint address
-        const TOKEN_DECIMALS = 6;  // Correct number of decimals for your SPL token
-        const TOKEN_MINT_PUBLIC_KEY = new solanaWeb3.PublicKey(TOKEN_MINT_ADDRESS);
-        const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-        const ASSOCIATED_TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"); // Use the same ID as in the working code
-        const BACKEND_GET_COST_URL = '/get_cost_publish';
-        const BACKEND_PUBLISH_ACTION_URL = '/publish_action_website';
-        const HASHCHAT = '{{hashchatsession}}';
-        
-        // Add the custom RPC_URL
-        const RPC_URL = '{{endpoint_solana}}'; // Replace with your own QuickNode URL
-        
-        // DOM elements
-        const connectWalletButton = document.getElementById('connect-wallet-button');
-        
-        // Polling function to confirm transaction with timeout
-        async function waitForConfirmation(connection, signature, timeout = 120000, interval = 5000) {
-            const startTime = Date.now();
-        
-            return new Promise((resolve, reject) => {
-                const timer = setInterval(async () => {
-                    try {
-                        const status = await connection.getSignatureStatus(signature);
-                        const confirmation = status && status.value && (status.value.confirmationStatus === 'confirmed' || status.value.confirmationStatus === 'finalized');
-        
-                        if (confirmation) {
-                            clearInterval(timer);
-                            resolve(status.value);
-                        } else if (Date.now() - startTime > timeout) {
-                            clearInterval(timer);
-                            reject(new Error('Transaction confirmation timeout exceeded.'));
-                        }
-                    } catch (error) {
-                        clearInterval(timer);
-                        reject(error);
-                    }
-                }, interval);
-            });
-        }
-        
-        connectWalletButton.addEventListener('click', async () => {
-            if (window.solana && window.solana.isPhantom) {
-                try {
-                    // Connect to Phantom Wallet
-                    const resp = await window.solana.connect();
-                    const userPublicKey = resp.publicKey;
-                    const walletAddress = userPublicKey.toString();
-        
-                    // Send wallet and hashchat to the backend to get the cost
-                    const response = await fetch(BACKEND_GET_COST_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            wallet: walletAddress,
-                            hashchat: HASHCHAT
-                        })
-                    });
-        
-                    const data = await response.json();
-                    if (data.error) {
-                        alert('Error retrieving cost: ' + data.error);
-                        return;
-                    }
-        
-                    const costAmount = data.cost_amount; // Assuming it's a number or string
-        
-                    // Convert amount to correct format
-                    const tokenAmount = Math.round(parseFloat(costAmount) * Math.pow(10, TOKEN_DECIMALS));
-        
-                    // Establish connection to Solana network using the custom RPC
-                    const connection = new solanaWeb3.Connection(RPC_URL, 'confirmed');
-        
-                    // Project wallet address
-                    const PROJECT_WALLET_ADDRESS = '{{ wallet_project }}';
-                    const PROJECT_PUBLIC_KEY = new solanaWeb3.PublicKey(PROJECT_WALLET_ADDRESS);
-        
-                    // Get or create associated token accounts
-                    const userTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, userPublicKey);
-                    const projectTokenAccountAddress = await getAssociatedTokenAddress(TOKEN_MINT_PUBLIC_KEY, PROJECT_PUBLIC_KEY);
-        
-                    const transaction = new solanaWeb3.Transaction();
-        
-                    // Check if the user's associated token account exists and has sufficient balance
-                    const userTokenAccountInfo = await connection.getAccountInfo(userTokenAccountAddress);
-        
-                    let sourceTokenAccount = null;
-        
-                    if (userTokenAccountInfo !== null) {
-                        // ATA exists, check if it has sufficient balance
-                        const tokenAccountBalanceResponse = await connection.getTokenAccountBalance(userTokenAccountAddress);
-                        const tokenAccountBalance = parseInt(tokenAccountBalanceResponse.value.amount);
-        
-                        if (tokenAccountBalance >= tokenAmount) {
-                            sourceTokenAccount = userTokenAccountAddress;
-                        }
-                    }
-        
-                    // If no sufficient balance found in the ATA, search other accounts
-                    if (!sourceTokenAccount) {
-                        // Get all user's token accounts for the specific mint
-                        const tokenAccounts = await connection.getParsedTokenAccountsByOwner(userPublicKey, {
-                            mint: TOKEN_MINT_PUBLIC_KEY
-                        });
-        
-                        // Look for an account with sufficient balance
-                        for (let accountInfo of tokenAccounts.value) {
-                            const balance = parseInt(accountInfo.account.data.parsed.info.tokenAmount.amount);
-                            if (balance >= tokenAmount) {
-                                sourceTokenAccount = accountInfo.pubkey;
-                                break;
-                            }
-                        }
-                    }
-        
-                    if (!sourceTokenAccount) {
-                        alert('You don’t have enough tokens to send.');
-                        return;
-                    }
-        
-                    // Check if the project's associated token account exists
-                    const projectTokenAccountInfo = await connection.getAccountInfo(projectTokenAccountAddress);
-                    if (projectTokenAccountInfo === null) {
-                        // Create the project's associated token account
-                        const createProjectATAIx = createAssociatedTokenAccountInstruction(
-                            userPublicKey, // Payer (user pays for creation)
-                            projectTokenAccountAddress, // ATA to create
-                            PROJECT_PUBLIC_KEY, // Owner
-                            TOKEN_MINT_PUBLIC_KEY
-                        );
-                        transaction.add(createProjectATAIx);
-                    }
-        
-                    // Create transfer instruction
-                    const transferIx = createTransferCheckedInstruction(
-                        sourceTokenAccount,
-                        TOKEN_MINT_PUBLIC_KEY,
-                        projectTokenAccountAddress,
-                        userPublicKey,
-                        tokenAmount,
-                        TOKEN_DECIMALS
-                    );
-        
-                    transaction.add(transferIx);
-        
-                    // Set fee payer and recent blockhash
-                    transaction.feePayer = userPublicKey;
-                    const latestBlockhash = await connection.getLatestBlockhash();
-                    transaction.recentBlockhash = latestBlockhash.blockhash;
-        
-                    // Sign and send the transaction
-                    const signedTransaction = await window.solana.signTransaction(transaction);
-                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
-        
-                    // Wait for transaction confirmation with a 2-minute timeout
-                    try {
-                        await waitForConfirmation(connection, signature, 120000, 5000);
-                        alert('Payment successful! Transaction signature: ' + signature);
-                    } catch (confirmationError) {
-                        console.error('Transaction confirmation error:', confirmationError);
-                        alert('The transaction is pending or failed. Please check the signature on Solana Explorer: ' + signature);
-                        return;
-                    }
-        
-                    // After successful payment, send data to the backend to publish the website
-        
-                    const publishResponse = await fetch(BACKEND_PUBLISH_ACTION_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            signature_tx: signature,
-                            hashchat: HASHCHAT
-                        })
-                    });
-        
-                    const publishData = await publishResponse.json();
-                    if (publishData.error) {
-                        alert('Error publishing website: ' + publishData.error);
-                    } else {
-                        alert('Website published successfully! Your URL is: /website/' + publishData.url_web);
-                        // Optionally, redirect the user to their new website
-                        window.location.href = '/website/' + publishData.url_web;
-                    }
-        
-                } catch (err) {
-                    console.error('An error occurred:', err);
-                    alert('An error occurred: ' + err.message);
-                }
-            } else {
-                alert('Phantom Wallet not detected. Please install the Phantom Wallet extension.');
-            }
-        });
-        
-        
-        // Functions to handle SPL tokens without the spl-token library
-        async function getAssociatedTokenAddress(mint, owner) {
-            return (await solanaWeb3.PublicKey.findProgramAddress(
-                [
-                    owner.toBuffer(),
-                    TOKEN_PROGRAM_ID.toBuffer(),
-                    mint.toBuffer(),
-                ],
-                ASSOCIATED_TOKEN_PROGRAM_ID
-            ))[0];
-        }
-        
-        function createAssociatedTokenAccountInstruction(payer, ata, owner, mint) {
-            const keys = [
-                { pubkey: payer, isSigner: true, isWritable: true },
-                { pubkey: ata, isSigner: false, isWritable: true },
-                { pubkey: owner, isSigner: false, isWritable: false },
-                { pubkey: mint, isSigner: false, isWritable: false },
-                { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
-                { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-            ];
-            return new solanaWeb3.TransactionInstruction({
-                keys,
-                programId: ASSOCIATED_TOKEN_PROGRAM_ID,
-                data: new Uint8Array(0),
-            });
-        }
-        
-        function createTransferCheckedInstruction(source, mint, destination, owner, amount, decimals) {
-            const data = new Uint8Array(10);
-            const dataView = new DataView(data.buffer);
-        
-            dataView.setUint8(0, 12); // Instruction index for TransferChecked
-            dataView.setBigUint64(1, BigInt(amount), true); // Amount in little-endian
-            dataView.setUint8(9, decimals); // Token decimals
-        
-            const keys = [
-                { pubkey: source, isSigner: false, isWritable: true },
-                { pubkey: mint, isSigner: false, isWritable: false },
-                { pubkey: destination, isSigner: false, isWritable: true },
-                { pubkey: owner, isSigner: true, isWritable: false },
-            ];
-        
-            return new solanaWeb3.TransactionInstruction({
-                keys,
-                programId: TOKEN_PROGRAM_ID,
-                data: data,
-            });
-        }
-        });
-        </script>
-        
-        
-    <style>
-        /* Basic Reset */
+    <style>/* Reset Styles */
         * {
             box-sizing: border-box;
             font-family: 'Mulish', sans-serif;
-        }
-        
-        .audio-player {
-    background: rgba(0, 0, 0, 0.2); /* Fondo oscuro transparente */
-    padding: 10px;
-    margin: 4px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 200px;
-}
-
-.audio-player h2 {
-    margin-bottom: 15px;
-    color: #fff; /* Texto blanco para mejor visibilidad */
-    font-size: 1.2em;
-}
-
-audio {
-    width: 100%;
-    outline: none;
-}
-
-.download-button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 5px 10px; /* Botón más pequeño */
-    background-image: linear-gradient(to right, #0066ff, #33ccff); /* Texto con gradiente */
-    color: white; /* Texto en blanco */
-    text-decoration: none; /* Sin subrayado */
-    border-radius: 5px; /* Bordes redondeados */
-    font-weight: bold;
-    font-size: 0.9em; /* Texto más pequeño */
-}
-    body {
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #100D0E !important; /* Black background */
-            color: #fff; /* White text */
+        }
+        
+        body {
+            font-family: 'Mulish', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
         }
         
         /* Navbar Styles */
         .navbar {
-            padding: 0.5rem 1rem;
-            background-color: #282828 !important;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
             width: 100%;
-            max-width: 1200px;
-            position: relative;
-            z-index: 1000; /* Ensures navbar is above dropdown menu */
-            border: 1px solid #181818; /* Subtle border */
-            border-radius: 20px; /* Rounded corners */
-            margin-bottom: 10px; /* Space between navbar and features */
-        }
-        
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            text-decoration: none;
-        }
-        
-        .navbar-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5); /* Sombra blanca */
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
             display: flex;
-            flex-wrap: wrap;
+            justify-content: center;
             align-items: center;
+            padding: 10px 20px;
+            z-index: 1000;
+        }
+        
+        .navbar .logo {
+            position: absolute;
+            left: 20px;
+        }
+        
+        .navbar .logo img {
+            width: 50px;
+        }
+        
+        .navbar ul {
+            list-style: none;
+            display: flex;
             margin: 0;
             padding: 0;
-            list-style: none;
-            flex-direction: row; /* Default alignment */
+            justify-content: center;
+            flex: 1;
         }
         
-        .navbar-nav .nav-link {
-            color: #fff;
-            margin-right: 20px;
-            font-weight: 600;
+        .navbar li {
+            margin: 0 15px;
+        }
+        
+        .navbar a {
             text-decoration: none;
-            transition: color 0.3s ease;
+            color: #fff; /* Cambiado a blanco */
+            font-size: 16px;
+            transition: color 0.3s;
         }
         
-        .navbar-nav .nav-link:hover {
-            color: #00cc99; /* Greenish hover effect */
+        .navbar a:hover {
+            color: #ccc; /* Cambiado a gris claro */
         }
         
-        .navbar-toggler {
+        /* Hamburger Menu */
+        .hamburger {
             display: none;
-            font-size: 1.5rem;
-            color: #fff;
-            background: none;
-            border: none;
+            flex-direction: column;
             cursor: pointer;
-            position: relative;
-            z-index: 1100; /* Above dropdown menu */
-            width: 30px;
-            height: 30px;
+            z-index: 1100;
         }
         
-        /* Hamburger Icon */
-        .navbar-toggler .navbar-toggler-icon,
-        .navbar-toggler .navbar-toggler-icon::before,
-        .navbar-toggler .navbar-toggler-icon::after {
-            display: block;
-            background-color: #fff;
+        .hamburger div {
+            width: 25px;
             height: 3px;
-            width: 100%;
-            border-radius: 2px;
-            position: absolute;
-            left: 0;
+            background: #fff; /* Cambiado a blanco */
+            margin: 4px 0;
             transition: all 0.3s ease;
         }
         
-        .navbar-toggler .navbar-toggler-icon {
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        
-        .navbar-toggler .navbar-toggler-icon::before {
-            content: '';
-            top: -8px;
-        }
-        
-        .navbar-toggler .navbar-toggler-icon::after {
-            content: '';
-            top: 8px;
-        }
-        
-        /* Transform into "X" when open */
-        .navbar-toggler.open .navbar-toggler-icon {
-            background: transparent;
-        }
-        
-        .navbar-toggler.open .navbar-toggler-icon::before {
+        /* Hamburger Animation */
+        .hamburger.active div:nth-child(1) {
             transform: rotate(45deg) translate(5px, 5px);
         }
         
-        .navbar-toggler.open .navbar-toggler-icon::after {
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active div:nth-child(3) {
             transform: rotate(-45deg) translate(5px, -5px);
         }
         
-        /* Content Balance */
-        .content_balance {
-            color: white;
-            font-weight: bold;
-            background-color: #28a745; /* Connected button background */
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-block;
-            bottom: 20px;
-        }
-        
-        /* Feature Section */
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin: 20px 0;
-            padding: 20px;
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1200px;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s ease;
         }
         
-        .feature {
-            /* Semi-transparent box */
-            padding: 20px;
-            width: 30%;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
+        .mobile-menu.active {
+            display: flex;
+        }
+        
+        .mobile-menu .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             text-align: center;
-            margin-bottom: 20px;
         }
         
-        .feature:hover {
-            transform: scale(1.05);
+        .mobile-menu li {
+            margin: 20px 0;
         }
         
-        .feature h3 {
-            background-image: linear-gradient(to right, #0066ff, #33ccff); /* Gradient text */
-            color: transparent;
-            -webkit-background-clip: text;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .mobile-menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            transition: color 0.3s;
         }
         
-        .feature p {
-            color: #ccc; /* Light gray text */
+        .mobile-menu a:hover {
+            color: #ccc;
+        }
+        
+        /* Connection Button */
+        .header_title3 {
+            background-color: #00cc99;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
             font-size: 1rem;
-            text-align: left;
-            margin-top: 12px;
+            font-weight: bold;
         }
         
         /* Chat Container */
         .opaque-chat-wrapper {
-            background-color: #100D0E; /* Opaque background for chat */
+            background: rgba(0, 0, 0, 0.6); /* Transparente oscuro */
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.1); /* Sombra blanca ligera */
             padding: 20px;
-            border-radius: 10px;
-            width: 100%;
+            width: 90%;
             max-width: 1200px;
-            margin-bottom: 20px;
+            margin-top: 80px;
+            box-sizing: border-box;
         }
         
         .chat {
             display: flex;
             flex-direction: column;
-            min-height: 120vh;
-            background-color: transparent; /* Transparent background inside opaque wrapper */
+            min-height: 80vh;
+            background: rgba(0, 0, 0, 0.6); /* Transparente oscuro */
             border-radius: 10px;
-            padding: 10px;
+            padding: 20px;
             width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.1); /* Sombra blanca ligera */
+            color: #fff; /* Letras blancas */
         }
         
-        /* Chat Header */
-        .chat-header {
-            display: flex;
-            align-items: center;
-            padding: 5px;
-            border-bottom: 1px solid #333;
-            border-radius: 10px 10px 0 0;
-        }
-        
-        .chat-header img {
-            width: 50px;
-            margin-right: 15px;
-        }
-        
-        /* Chat Messages */
+        /* Chat Messages Section */
         .chat-messages {
-            flex: 1 1 auto;
+            flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: #222; /* Dark background for messages */
-            border-radius: 10px 10px 0px 0px;
-            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.5); /* Fondo transparente oscuro */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05); /* Sombra interna blanca ligera */
+            color: #fff; /* Letras blancas */
         }
         
         /* Chat Form */
         .chat-form {
-            padding: 15px;
             display: flex;
             align-items: center;
-            background-color: #111; /* Dark background for chat input */
-            border-radius: 0 0 10px 10px;
-            width: 50%;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.5); /* Transparente oscuro */
+            border-radius: 25px;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.05); /* Sombra blanca ligera */
         }
         
         .chat-input {
             flex: 1;
             padding: 10px 15px;
-            background-color: #333;
-            color: #fff;
-            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1); /* Fondo blanco translúcido */
+            color: #fff; /* Letras blancas */
             border: none;
-            margin-right: 10px;
+            border-radius: 20px;
             font-size: 1rem;
-            min-width: 200px;
+            margin-right: 10px;
+            outline: none;
         }
         
         .chat-input::placeholder {
-            color: #ccc;
+            color: #ccc; /* Placeholder gris claro */
         }
         
         /* Chat Buttons */
         .chat-submit, .recordButton, #uploadButton {
-            background: gray;
+            background-color: #00cc99;
             padding: 10px;
-            border-radius: 50%; /* Rounded buttons */
+            border-radius: 50%;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease, background 0.3s ease;
-            margin-right: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-left: 5px;
         }
         
         .chat-submit:hover, .recordButton:hover, #uploadButton:hover {
-            transform: scale(1.1); /* Hover effect */
-            background: linear-gradient(to right, #00cc99, #0056b3);
+            background-color: #009977;
+            transform: scale(1.1);
         }
         
         .chat-submit img, .recordButton img, #uploadButton img {
             width: 20px;
             height: 20px;
         }
-.img_return{
-    width: 100%;
-}        
-        /* Start Button */
-        button#initBtn {
-            background: gray;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
         
-        button#initBtn:hover {
-            background: linear-gradient(to right, rgb(22, 214, 32), green);
-            transform: scale(1.05);
-        }
-        
-        /* General Chat Styles */
-        .chat-messages {
-            padding: 10px;
-            background-color: #111;
-            height: 50vh;
-            width: 50%;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        /* User Message Styles */
+        /* User Messages */
         .user-message-container {
             display: flex;
-            justify-content: flex-end; /* Aligns to the right */
-            margin-right: 10px;
+            justify-content: flex-end;
+            margin-bottom: 10px;
         }
         
         .user-message-container .message-content {
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
+            background-color: #e1ffc7;
+            color: #333;
             padding: 10px 15px;
             border-radius: 15px 15px 0 15px;
             max-width: 60%;
             word-wrap: break-word;
-            font-size: 14px;
-            text-align: right;
+            font-size: 16px;
+            text-align: left;
         }
         
-        /* Server Message Styles */
+        /* Server Messages */
         .server-message-container {
             display: flex;
-            justify-content: flex-start; /* Aligns to the left */
-            margin-left: 10px;
-            
+            justify-content: flex-start;
+            margin-bottom: 10px;
         }
         
         .server-message-container .message-content {
-            background: linear-gradient(45deg, #00CC66, #0056b3);
-            color: white;
+            background: #f0f0f0;
+            color: #333;
             padding: 10px 15px;
             border-radius: 15px 15px 15px 0;
             max-width: 60%;
             word-wrap: break-word;
-            font-size: 14px;
+            font-size: 16px;
             text-align: left;
-        }
-        
-        /* Message Images */
-        .message-images {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-        
-        .message-images img {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        
-        /* Header Titles */
-        .header_title1, .header_title2, .header_title3 {
-            background-size: cover; /* Ensures the image covers the div */
-            background-position: center; /* Centers the image within the div */
-            background-repeat: no-repeat; /* Prevents image repetition */
-            width: 100%; /* Adjusts the div width */
-            border-radius: 10px;
-            height: 60px; /* Adjusts height based on design */
-            display: flex;
-            align-items: center; /* Centers content vertically */
-            justify-content: center; /* Centers content horizontally */
-            color: white; /* Changes text color if necessary */
-            font-size: 1.5rem;
-            text-align: center;
-            padding: 0 5px;
-        }
-        
-        .header_title1 {
-            background-image: url("{{ url_for('static', filename='images/feature1.jpg', cache_timeout=0) }}");
-        }
-        
-        .header_title2 {
-            background-image: url("{{ url_for('static', filename='images/feature2.jpg', cache_timeout=0) }}");
-        }
-        
-        .header_title3 {
-            background-image: url("{{ url_for('static', filename='images/feature3.jpg', cache_timeout=0) }}");
         }
         
         /* Preview Window Styles */
         .preview-window {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 400px;
-            max-width: 90%;
-            height: 300px;
-            background-color: #fff;
-            border: 1px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 2000;
             display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            display: none; /* Hidden by default */
-            transition: all 0.3s ease;
-        }
-
-        /* Maximized Preview Styles */
-        .preview-window.maximized {
+            position: fixed;
             top: 0;
             right: 0;
-            bottom: 0;
+            width: 50%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 1000;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .preview-window.maximized {
+            width: 100%;
+            height: 100%;
+            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 0;
         }
-
-        /* Responsive Design for Preview Window */
-        @media (min-width: 1024px) {
-            .preview-window {
-                width: 600px;
-                height: 500px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .preview-window {
-                width: 90%;
-                height: 300px;
-            }
-        }
-    
-        .preview-window iframe {
-            flex: 1;
-            border: none;
-            width: 100%;
-            height: 100%;
-        }
-    
+        
         .preview-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #333;
-            color: #fff;
+            background-color: #00cc99;
             padding: 10px;
+            border-bottom: 1px solid #ddd;
         }
-    
-        .preview-header button {
-            background: none;
-            border: none;
+        
+        .preview-header span {
+            font-size: 18px;
+            font-weight: bold;
             color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-left: 5px;
         }
-
-        /* Maximize/Minimize Button */
-        #maximize-preview-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        /* Export Buttons */
-        .export-buttons {
+        
+        .preview-header .export-buttons {
             display: flex;
             gap: 10px;
         }
-    
-        /* Show Preview Button When Minimized */
+        
+        .preview-header button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #fff;
+            color: #00cc99;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .preview-header button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .preview-header div {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .preview-header div button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background-color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            padding: 0;
+        }
+        
+        .preview-header div button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .preview-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            min-height: 0;
+        }
+        
         #show-preview-btn {
-            display: none; /* Hidden by default */
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
             padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 2000;
-        }
-    
-        /* Drag and Drop Styles */
-        #drag-drop-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            z-index: 1500;
-            flex-direction: column;
-        }
-    
-        #drag-drop-overlay p {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-    
-        #drag-drop-button {
             background-color: #00cc99;
             color: #fff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 50%;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 1rem;
+            display: none;
+            z-index: 1000;
         }
-    
-        #drag-drop-button:hover {
-            background-color: #0056b3;
-        }
-    
-        /* Preview Images Container */
-        #preview-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-    
-        /* Additional Styles */
-        .feature {
-            margin-bottom: 20px; /* Separation between features */
-        }
-        
-        .feature h3 {
-            margin: 0; /* Removes margin for better alignment */
-            color: white;
-        }
-        
-        p {
-            font-size: 19px;
-            line-height: 1.5;
-        }
-        
-        a {
-            margin-left: 50px;
-            color: #00cc99;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        a:hover {
-            color: #33ffcc;
-        }
-        
-        /* Media Queries for Responsive Design */
-        
-        /* Tablets and smaller devices */
-        @media (max-width: 1024px) {
-            .feature {
-                width: 45%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .chat-messages{
-                width: 90%;
-            }
-            .chat-form{
-                width: 90%;
-            }
-            /* Navbar adjustments */
-            .navbar-nav {
-                flex-direction: column;
-                width: 100%;
-                display: none;
-                background-color: #100D0E; /* Black background for dropdown menu */
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                padding-top: 60px; /* Space for navbar */
-                transition: transform 0.3s ease-in-out;
-                transform: translateY(-100%);
-            }
 
-            .navbar-nav.show {
-                display: flex;
-                transform: translateY(0);
-            }
+        /* Custom Scrollbar Styles for Preview Window */
+        .preview-window ::-webkit-scrollbar {
+            width: 12px;
+        }
 
-            .navbar-nav .nav-link {
-                margin: 20px 0;
-                font-size: 1.5rem;
-                text-align: center;
-            }
+        .preview-window ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
 
-            .navbar-toggler {
-                display: block;
-            }
-
-            /* Feature adjustments */
-            .feature {
-                width: 100%;
-            }
-        
-            /* Chat adjustments */
-            .user-message-container {
-                padding-left: 10%;
-            }
-        
-            .server-message-container {
-                padding-right: 10%;
-            }
-        
-            .message-images img {
-                width: 50px;
-                height: 50px;
-            }
+        .preview-window ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, red, blue);
+            border-radius: 10px;
         }
         
-        @media (max-width: 600px) and (orientation: landscape) {
-            .image-section .overlay-text {
-                font-size: 40px;
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .opaque-chat-wrapper {
+                width: 95%;
+                padding: 15px;
             }
         
-            .header_title {
-                height: 80px;
-                font-size: 1.2rem;
+            .chat {
+                min-height: 70vh;
             }
         
-            .chat-header img {
-                width: 40px;
-                margin-right: 10px;
-            }
-        
-            .chat-input {
-                padding: 10px 12px;
-                font-size: 0.9rem;
-            }
-        
-            button#initBtn {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-        
-            .chat-submit img, .recordButton img, #uploadButton img {
-                width: 18px;
-                height: 18px;
-            }
-        
-            .content_balance {
-                padding: 5px 10px;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            /* General adjustments */
-            body {
-                height: auto;
-                padding: 20px 0;
-            }
-        
-            .container, .chat {
-                border-radius: 0;
+            .chat-form {
                 padding: 10px;
             }
         
-            .image-section .overlay-text {
-                font-size: 30px; /* Further reduce font size for smaller screens */
-            }
-        
-            .header_title {
-                height: 60px;
-                font-size: 1rem;
-            }
-        
-            h1 {
-                font-size: 18px;
-            }
-        
-            p {
-                font-size: 15px;
-            }
-        
-            .input-group label, .input-group input, button, .google-signin, .additional-links a {
-                font-size: 14px;
-            }
-        
-            .navbar-nav .nav-link {
-                margin-right: 10px;
-            }
-        
-            .feature h3 {
-                font-size: 1.2rem;
-            }
-        
-            .feature p {
-                font-size: 0.9rem;
-            }
-        
-            .chat-header img {
-                width: 40px;
-                margin-right: 10px;
-            }
-        
             .chat-input {
+                font-size: 14px;
                 padding: 10px 12px;
-                font-size: 0.9rem;
             }
         
-            button#initBtn {
-                padding: 8px 16px;
-                font-size: 0.9rem;
+            .chat-submit, .recordButton, #uploadButton {
+                padding: 8px;
             }
         
             .chat-submit img, .recordButton img, #uploadButton img {
@@ -1030,114 +451,152 @@ audio {
                 height: 18px;
             }
         
-            .content_balance {
-                padding: 5px 10px;
-                font-size: 0.9rem;
+            .navbar ul {
+                display: none;
             }
         
-            /* Feature section */
-            .features {
-                padding: 5px;
+            .hamburger {
+                display: flex;
+            }
+        
+            /* Chat Adjustments for Mobile */
+            .chat-messages {
+                padding: 15px;
+            }
+        
+            .user-message-container .message-content,
+            .server-message-container .message-content {
+                max-width: 80%;
+                font-size: 14px;
             }
         }
-        #chat-input {
-    overflow: hidden;
-    overflow-y: scroll; /* Permitir el scroll vertical */
-    scrollbar-width: none; /* Firefox: Ocultar la barra de scroll */
-    -ms-overflow-style: none; /* IE y Edge: Ocultar la barra de scroll */
-  }
-
-  #chat-input::-webkit-scrollbar {
-    display: none; /* Chrome, Safari y Opera: Ocultar la barra de scroll */
-  }
-    </style>
+        
+        @media screen and (max-width: 480px) {
+            .opaque-chat-wrapper {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 20px;
+            }
+        
+            .chat {
+                min-height: 60vh;
+            }
+        
+            .chat-messages {
+                padding: 10px;
+            }
+        
+            .chat-input {
+                font-size: 14px;
+                padding: 12px 15px;
+            }
+        
+            .chat-submit, .recordButton, #uploadButton {
+                padding: 10px;
+            }
+        
+            .chat-submit img, .recordButton img, #uploadButton img {
+                width: 18px;
+                height: 18px;
+            }
+        
+            .user-message-container .message-content,
+            .server-message-container .message-content {
+                max-width: 90%;
+                font-size: 14px;
+            }
+        }
+        </style>
 </head>
 <body>
-    <!-- Chat Menu Wrapped in an Opaque Div -->
+
+    <!-- Navbar Mejorado -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" alt="Uncensored AI Logo"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" id="new-chat-btn">New Chat</a></li>
+            <li><a href="#" id="login-btn">Login</a></li>
+            <li><a href="/sign-up">Sign Up</a></li>
+            <li><a href="/deposit_tokens" target="_blank">Deposit</a></li>
+        </ul>
+        
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <span class="close-menu" id="close-menu">&times;</span>
+        <ul>
+            <li><a href="#" id="new-chat-btn">New Chat</a></li>
+            <li><a href="#" id="login-btn">Login</a></li>
+            <li><a href="/sign-up">Sign Up</a></li>
+            <li><a href="/deposit_tokens" target="_blank">Deposit</a></li>
+        </ul>
+    </div>
+
+    <!-- Contenedor Principal del Chat -->
     <div class="opaque-chat-wrapper" id="opaque-chat-wrapper">
         <div class="chat" id="chat">
-            <div class="chat-header">
-                <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: transparent !important;">
-                    <a class="navbar-brand" href="/">
-                        <img src="{{ url_for('static', filename='images/ico.svg', cache_timeout=0) }}" style="width: 50px;" alt="Logo">
-                    </a>
-                    <button class="navbar-toggler" type="button">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                   
-                    <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" style="color: white" id="logout-btn">New Chat</a>
-                        <a class="nav-item nav-link" style="color: white" id="logout">Login</a>
-                        <a class="nav-item nav-link" style="color: white" href="/sign-up">Sign Up</a>
-                        <a class="nav-item nav-link" style="color: white" href="/deposit_tokens" target="_blank">Deposit</a>
-                    </div>
-                    <div class="header_title3" style="width: 100px; height: 35px; font-size:16px;" id="balance_account">
-                        Connected
-                    </div>
-                    <!-- Show Preview Button -->
-                    <button id="show-preview-btn">Show Preview</button>
-                </nav>
-            </div>
-            <!-- Features Section Outside the Opaque Chat Div -->
-            <div class="features">
-                <!-- Feature 1: Knowledge of Dalas Review & Crypto Projects -->
-                <div class="feature">
-                    <div class="header_title1">
-                        <h3>Knowledge of Dalas Review</h3>
-                    </div>
-                    <p>
-                        MINI AI possesses in-depth knowledge about Dalas Review and his crypto projects. Whether you have questions about his content, career, or the details of his cryptocurrency projects, MINI AI offers thorough and insightful responses.
-                    </p>
+            <!-- Sección de Mensajes del Chat -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="container_text_area">
+                    <!-- Aquí se mostrarán los mensajes del chat -->
                 </div>
+            </div>
             
-                <!-- Feature 2: Multimedia & Web Creation -->
-                <div class="feature">
-                    <div class="header_title2">
-                        <h3>Multimedia & Web Creation</h3>
-                    </div>
-                    <p>
-                        MINI AI can create music, images, videos, and integrate these multimedia elements into web pages. It can generate complete websites and HTML5 structures, embedding the media it produces directly within the generated web content.
-                    </p>
-                </div>
-            
-                <!-- Feature 3: Publish & Monetize Web Pages -->
-                <div class="feature">
-                    <div class="header_title3">
-                        <h3>Publish & Monetize Web Pages</h3>
-                    </div>
-                    <p>
-                        Users can publish web pages created with MINI AI and accept donations with no fees, receiving 100% of the support from their audience to monetize their work.
-                    </p>
-                </div>
-            </div>
-                        <center>
-                <div class="chat-messages" id="chat-messages" style="margin: 0px; overflow-x: hidden; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
-                    <div class="container_text_area">
-                        <!-- Features Outside the Opaque Chat Div -->
-                    </div>
-                </div>
-                <!-- Chat Form -->
-                <form class="chat-form" id="chat-form" style=" margin: 0px;" data-hashsesion="{{ hashchat }}">
-                    <textarea class="chat-input" id="chat-input" placeholder="Write your message..."></textarea>
-                    <button type="submit" class="chat-submit" aria-label="Send">
-                        <img src="{{ url_for('static', filename='images/send.png', cache_timeout=0) }}" style="width: 30px; height: 30px;" class="send-icon" alt="Send">
-                    </button>
-                    <button type="button" id="recordButton" aria-label="Record" class="recordButton" style="margin-left: 10px;">
-                        <img src="{{ url_for('static', filename='images/microphone.png', cache_timeout=0) }}" style="width: 30px; height: 30px;" class="record-icon" alt="Record">
-                    </button>
-                </form>
-                <!-- Preview Images -->
-                <div id="preview-images"></div>
-            </center>
-            <!-- Drag and Drop Overlay -->
-            <div id="drag-drop-overlay">
-                <p>Drag an image here or click to upload</p>
-                <input type="file" id="drag-drop-input" accept=".png, .jpg, .jpeg" style="display:none;">
-                <button id="drag-drop-button">Upload File</button>
-            </div>
+            <!-- Formulario del Chat -->
+            <form class="chat-form" id="chat-form" data-hashsesion="{{ hashchat }}">
+                <textarea class="chat-input" id="chat-input" placeholder="Escribe tu mensaje..." required></textarea>
+                <button type="submit" class="chat-submit" aria-label="Enviar">
+                    <img src="https://cdn-icons-png.flaticon.com/128/10322/10322482.png" class="send-icon" alt="Enviar">
+                </button>
+                <button type="button" id="recordButton" aria-label="Grabar" class="recordButton">
+                    <img src="https://cdn-icons-png.flaticon.com/128/17132/17132868.png" class="record-icon" alt="Grabar">
+                </button>
+                <!-- Si tienes un botón de upload, descomenta el siguiente bloque -->
+                <!--
+                <button type="button" id="uploadButton" aria-label="Upload" class="uploadButton">
+                    <img src="URL_DE_TU_IMAGEN" alt="Upload">
+                </button>
+                -->
+            </form>
         </div>
     </div>
     
+    <!-- Script para el Toggler del Navbar -->
+    <script>
+        // Hamburger Menu Toggle  
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active'); // Añadir clase para animación
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('active'); // Remover clase para animación
+        });
+
+        // Cerrar el menú si se hace clic fuera de él (opcional)
+        window.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    </script>
+
     <!-- Preview Window -->
     <div class="preview-window" id="preview-window">
         <div class="preview-header">
@@ -1154,8 +613,7 @@ audio {
                 <button id="maximize-preview-btn">+</button>
             </div>
         </div>
-        <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
-
+        <iframe id="preview-iframe" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
     </div>
     
     <!-- Button to Show Preview When Minimized -->
@@ -1164,6 +622,7 @@ audio {
     <!-- Additional Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+
 
     <!-- Scripts to Handle Responsive Menu and Additional Functionalities -->
     <script>
