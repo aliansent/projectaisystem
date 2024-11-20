@@ -1857,7 +1857,7 @@ def signup():
 @limiter.limit("60 per minute")  # Aplicar límite específico si es necesario
 def index():
         # Si no hay sesión válida, renderizar la página de inicio de sesión
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/login')
 @limiter.limit("60 per minute")  # Aplicar límite específico si es necesario
